@@ -1,8 +1,7 @@
 # pda-team 团队契约
 
-> 本文件是 **pda-team 的唯一团队定义**：成员、通信、文件命名、工作流程、目录职责与纪律。
-> 三个角色技能 `pda-pm` / `pda-am` / `pda-dm` 只做落地说明，**冲突时以本文件为准**。
-> 团队所有成员运行在终端多智能体复用器 Herdr 中；会话与 pane 会随重启变化，本文件不登记 pane id。
+> 本文件是 **pda-team 的唯一团队定义**：成员、通信、文件命名、工作流程、目录职责与纪律；三个角色技能 `pda-pm` / `pda-am` / `pda-dm` 只做落地说明，**冲突时以本文件为准**。
+> 团队成员运行在终端多智能体复用器 Herdr 中；会话与 pane 随重启变化，本文件不登记 pane id。
 
 ## 1. 团队定义
 
@@ -14,8 +13,7 @@
 | DM | 开发经理（DevelopManager） | `DM` | `sde`（softwareDevelopEngineer） | 组建开发团队、接需求、拆 ticket、派单实施、修改问题、汇总评审整合 |
 | AM | 调研与分析部经理（AnalystManager） | `AM` | `analyst`（分析师） | 市场信息调研、竞品逆向分析，输出调研报告 |
 
-层级：`PM`（团队领导）统管全局并与用户对话；`AM` 与 `DM` 是部门经理，各自管理本部门子代理；`pde` / `analyst` / `sde` 是各部门按需派生的子代理，**不装独立技能**，纪律内嵌在对应经理的技能与派发 prompt 中。
-
+层级：`PM`（团队领导）统管全局并与用户对话；`AM` / `DM` 是部门经理，各自管理本部门子代理；`pde` / `analyst` / `sde` 是按需派生的子代理，**不装独立技能**，纪律内嵌在对应经理的技能与派发 prompt 中。
 派单来源：`AM` **只接受 PM 派单**（DM 需要调研时经 PM 转派）；`DM` 只接受 PM 的 SPEC 与 PM 的修复要求。
 
 ### 1.2 运行环境
@@ -68,17 +66,11 @@ HERDR_ENV=1 herdr tab create --label <ROLE> --cwd "$PWD"
 ```bash
 # 首选：按 harness 安装（pi / opencode / codebuddy / amp / cursor / devin / windsurf；省略 -a 则交互选择）
 npx skills@latest add mattpocock/skills -a <agent>
-```
-
-提示词安装失败时回退到源码安装：
-
-```bash
+# 回退（提示词安装失败时）：克隆源码，把 skills/ 下的技能目录 copy 到 ~/.agents/skills/，再软链到 harness 技能目录
 git clone https://github.com/mattpocock/skills.git
-# 把 skills/ 下的技能目录 copy 到 ~/.agents/skills/，再软链到当前 harness 的 skill 目录
-ln -s ~/.agents/skills/<skill> <harness-skills-dir>/<skill>
 ```
 
-已知缺口（2026-10 核查，供参考）：上游 `mattpocock/skills` **没有 `to-prd`**，`implement-spec` 仍在 `in-progress/` 未发布。PM 写 PRD 按本文件 §4 的模板手写；若后续上游提供 `to-prd`，优先改用它。
+已知缺口（2026-10 核查）：上游 `mattpocock/skills` **没有 `to-prd`**，`implement-spec` 仍在 `in-progress/` 未发布。PM 写 PRD 按本文件 §4 模板手写；若后续上游提供 `to-prd`，优先改用它。
 
 ## 2. 文件命名规范（权威）
 
@@ -96,8 +88,8 @@ ln -s ~/.agents/skills/<skill> <harness-skills-dir>/<skill>
 1. **spec 与 ticket 必须对齐 `spec-seq`**：同一需求的 SPEC 与其 ticket 用同一个 `spec-seq` 前缀。
 2. **版本语义**：版本内小步更新**就地改同一文件**；实质修订**另立新版本号文件**（新时间戳、`v{N+1}`），并在旧文件头部就地标注「已被 v N+1 取代」。
 3. PRD 按需求方给定的格式只有日期（`YYMMDD`），无时刻；其余产物一律带时刻。
-4. 历史笔误留痕：需求原文 §4.7 的 `ver{seq}` 写法与 §2.5.2 的 `YYMMDD-v{seq}` 写法**已作废**，一律以本表为准，历史文件不改名。
-5. PRD 的 `{seq}` 与 SPEC 的 `{spec-seq}` **各自独立编号**；只有 SPEC 与 ticket 必须共用同一个 `spec-seq`。
+4. **独立编号**：PRD 的 `{seq}` 与 SPEC 的 `{spec-seq}` 各自独立；只有 SPEC 与 ticket 必须共用同一个 `spec-seq`。
+5. 历史笔误留痕：需求原文的 `ver{seq}`、`YYMMDD-v{seq}` 写法**已作废**，一律以本表为准，历史文件不改名。
 
 ## 3. 目录职责
 
@@ -110,9 +102,10 @@ ln -s ~/.agents/skills/<skill> <harness-skills-dir>/<skill>
 | `docs/research/` | AM | 市场调研与竞品逆向报告 | 无 |
 | `docs/tickets/` | DM（`sde` 更新证据） | 开发工单（ticket） | 与 SPEC 共用 `spec-seq` |
 | `docs/team.md` | PM | 团队契约（本文件） | 无 |
+| `docs/handoff/` | PM / DM | 交接说明（`{pm,dm}-{slug}-{YYMMDD-HHMM}-v{N}.md`，**仅在用户要求时写**） | 无 |
 
 1. 上述路径是**唯一允许位置**，不得写到 `docs/pd/`、`docs/dev/`、`docs/test/` 或其它任何位置，不得自建新的文档目录。
-2. 三个部门的产物目录**互不越界**：谁也不能改其它部门产物所在的路径；只读引用可以，移动/改名不可以。
+2. 三个部门的产物目录**互不越界**：只读引用可以，移动/改名不可以。
 3. 旧体系（`docs/pd/`、`docs/dev/`、`docs/test/`）只保留历史，**不再接收新产物**；历史文件不改名、不搬迁（历史事实留痕）。
 4. 机检口径：新产物路径必须匹配 `docs/(prd|spec|research|tickets)/` 前缀（脚本见 §7）。
 
@@ -137,10 +130,9 @@ SPEC 必须自包含：每条 User Story 都能转成 ticket 与用例。
 
 ### 5.1 Git
 
-1. **禁止 `git add -A` / `git add .`**，提交一律显式列文件路径。
+1. **禁止 `git add -A` / `git add .`**，提交一律显式列文件路径（优先 `git commit -m "..." -- <path>`，绕过索引），且 `add` 与 `commit` 之间不插入其它动作（避免索引被并发写者扫入）。
 2. 子代理（`sde`）**只 `git add` + `git commit`，不得 `git push`**；**只有 DM 能 `git push`**，且必须等 PM 评审通过并通知后。
 3. 提交前先跑 `/code-review`；提交后 `git diff --cached --name-only` 复核暂存区。
-4. `git add` 与 `git commit` 之间不插入其它动作（避免索引被并发写者扫入）。
 
 ### 5.2 并行子代理
 
