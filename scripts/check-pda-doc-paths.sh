@@ -7,7 +7,8 @@ set -u
 
 ROOT="$(cd "${1:-$PWD}" && pwd)" || exit 2
 SKILLS_DIR="${PDA_SKILLS_DIR:-$ROOT/.agents/skills}"
-CONTRACT="$(cd "$(dirname "$0")/.." && pwd)/team.md"
+# 解析脚本真实位置，兼容“脚本被软链到项目里”的安装方式
+CONTRACT="$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)/team.md"
 
 fail=0
 echo "项目根：  $ROOT"

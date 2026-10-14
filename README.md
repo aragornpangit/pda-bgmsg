@@ -69,6 +69,15 @@ bash scripts/check-pda-doc-paths.sh <项目根目录>   # 省略参数则检查�
 
 ## 维护
 
-- 本仓是 pda-team 的**唯一维护地**；`cloneDynm/docs/team.md` 与 `cloneDynm/.agents/skills/pda-*` 是 2026-10-14 的历史副本，此后不再更新。
+- 本仓是 pda-team 的**唯一维护地**，使用方不保留副本。
+- 推荐接入方式是**相对软链**（以与本仓同级的项目为例）：
+
+```bash
+ln -s ../../../pda-team/skills/pda-pm <项目>/.agents/skills/pda-pm   # pda-am / pda-dm 同理
+ln -s ../../pda-team/team.md <项目>/docs/team.md
+ln -s ../../pda-team/scripts/check-pda-doc-paths.sh <项目>/scripts/check-pda-doc-paths.sh
+```
+
+- 软链后技能与契约都跟随本仓更新；技能内的契约引用不依赖相对路径（写作「`team.md`（本仓根；装到项目后为 `docs/team.md`）」），因此软链安装不会断链。
 - 改路径规范或角色职责后，必须重跑 `scripts/check-pda-doc-paths.sh`。
 - 依赖 harness 侧技能：`herdr`（通信）、`pi-subagents`（subagents 与 dynamic workflow），以及 mattpocock 的 `/to-spec`、`/to-tickets`、`/code-review`、`/tdd`、`/research` 等（安装与回退见 [`team.md`](team.md) §1.4）。
