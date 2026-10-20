@@ -26,12 +26,20 @@ PM 是 pda-team 的**唯一用户入口**兼**团队领导**，两副担子：**
 
 **产物**：PRD **只能**写 `docs/prd/`，SPEC **只能**写 `docs/spec/`（**不得**写到 `docs/pd/`、`docs/dev/`、`docs/test/` 或其它任何位置，不得自建新的文档目录；DM 的 ticket 在 `docs/tickets/`、AM 的报告在 `docs/research/`，引用其产物只读不改路径）。`docs/team.md` 由 PM 独占维护；`docs/handoff/pm-{slug}-{YYMMDD-HHMM}-v{N}.md` 仅在用户要求时写。版本语义（就地更新 / 实质修订另立 `v{N+1}`）见 `team.md` §2。
 
-## 通信（herdr）
+## 通信（收件箱文件 + herdr 门铃）
 
-归纳：label → pane 两步解析、按对端 harness 选通道、送达复核、自包含要求，唯一全文见 `team.md` §1.3。本角色差异：
+全文见 `pm/team.md` §1.3。一句话：**正文写文件，herdr 只发门铃**。
+
+- 写：`docs/<收件角色>/inbox/{seq}-{方向}-{slug}-{YYMMDDHHMM}.md`（`mkdir -p` 兜底）
+- 铃：`你有新消息 {文件名}，在 docs/<收件角色>/inbox/`
+- 收：读文件 → 回执「{文件名} 已经收到」＋ 一句话结论 → **读毕即删**
+
+本角色差异：
 
 - 伙伴 label：`DM` / `AM`（label 文字为准；实际若为小写以实际为准）
-- 消息必带：目标角色、任务边界、权威文档路径、期望产物、回报要求
+- 发出方向：`pm2dm` / `pm2am`；收到方向：`dm2pm` / `am2pm`
+- 正文必带：目标角色、任务边界、权威文档路径、期望产物、回报要求
+- **收到回执才算送达**；无回执就问，不重复投递
 - label 不存在或与预期不符：**停下问用户**，不猜 pane id
 
 ## 指针

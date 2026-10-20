@@ -52,24 +52,39 @@ HERDR_ENV=1 herdr pane list --workspace "$HERDR_WORKSPACE_ID"
 HERDR_ENV=1 herdr tab create --label <ROLE> --cwd "$PWD"
 ```
 
-### 1.3 通信方式
+### 1.3 通信方式（收件箱文件 + herdr 门铃）
 
-发送前两步（每次都要重跑，禁止复用上一次的 pane id）：
+**正文一律走文件，herdr 只发门铃一句。** 派单、回报、评审结论、裁决请求、缺陷退回，全部先落成收件方收件箱里的一份文件，再用 herdr 敲一句「你有新消息 <文件名>」。**消息里不贴长正文、不贴日志、不贴 diff。**
 
-1. `herdr tab list` 按 label 找到 `tab_id`；
-2. `herdr pane list` 按该 `tab_id` 取**当前** pane id。
+**第一步 定位伙伴**（每次重跑，禁止复用上一次的 pane id）：`herdr tab list` 按 label 找到 `tab_id` → `herdr pane list` 按该 `tab_id` 取**当前** pane id。label 不在列表里 ⇒ **停下问用户**，不猜 pane id。
 
-然后按**对端 harness** 选通道：
+**第二步 写收件箱文件**
 
-| 对端 harness | 发送方式 |
+- 路径：收件方的 `docs/<收件角色>/inbox/{seq}-{方向}-{slug}-{YYMMDDHHMM}.md`（`<收件角色>` ∈ `pm` / `dm` / `am`；目录不存在先 `mkdir -p`）
+- `{seq}`：自累计流水号，001 起，一条消息一个号（与 SPEC 的 `spec-seq` 无关）
+- `{方向}`：发送方2收件方，取值 `pm2dm` / `dm2pm` / `pm2am` / `am2pm` / `dm2am` / `am2dm`
+- `{slug}`：英文小写短横线，不超过 5 个词
+- `{YYMMDDHHMM}`：落盘时刻，两位年 + 月 + 日 + 时 + 分，无分隔符（例 `2610201430`）
+- 正文**自包含**：一句话摘要 / 权威文档路径 / 请求动作 / 期望产物 / 回报要求
+
+**第三步 发门铃**（按**对端 harness** 选通道，消息只发一句：文件名 + 目录）
+
+| 对端 harness | 门铃 |
 |---|---|
-| pi-coding-agent / codex / opencode | `HERDR_ENV=1 herdr agent prompt <pane 或已注册 agent 名> '<消息>'` |
-| codebuddy（cbc） | `HERDR_ENV=1 herdr pane send-text <pane> '<消息>'` 紧跟 `HERDR_ENV=1 herdr pane send-keys <pane> enter` |
-
-送达判定：`agent prompt` 需返回 `"type":"agent_prompted"`；`send-text + send-keys` 需 exit 0，并用 `herdr pane read <pane> --source recent-unwrapped --lines 40` 复核消息已进入对方输入区或历史。
+| pi-coding-agent / codex / opencode | `HERDR_ENV=1 herdr agent prompt <pane 或已注册 agent 名> '你有新消息 {文件名}，在 docs/<收件角色>/inbox/'` |
+| codebuddy（cbc） | `HERDR_ENV=1 herdr pane send-text <pane> '你有新消息 {文件名}，在 docs/<收件角色>/inbox/'` 紧跟 `HERDR_ENV=1 herdr pane send-keys <pane> enter` |
 
 发送前**必须先读目标面板**（`herdr pane read`）；若对方输入区有用户未提交内容，不得注入，改为等待或请用户转达。
-消息必须**自包含**：一句话摘要 + 权威文档路径 + 请求动作 + 期望产物 + 回报要求。
+
+**第四步 收件方处理**
+
+1. 读 `docs/<自己>/inbox/` 下的新文件，读完**立刻回执**给发送方：`{文件名} 已经收到` ＋ 一句话结论或下一步（回执走 herdr 消息，不另写文件）；
+2. **读毕即删**该文件（收件箱里只允许存在未读消息）；
+3. 需要回正文时，按同样规则反向写文件 + 门铃，不把长正文塞进回执。
+
+**送达判定**：以**对方回执**为准。`agent prompt` 返回 `"type":"agent_prompted"`、`send-text + send-keys` 返回 exit 0 只算「已投递」，不算「已收到」；无回执时**问**，不重复投递。
+
+**不入库**：收件箱是运行时通道，不是交付物；被服务项目的 `.gitignore` 必须含 `docs/*/inbox/`。
 
 ### 1.4 依赖的 harness 技能（mattpocock）
 
@@ -97,6 +112,7 @@ git clone https://github.com/mattpocock/skills.git
 | 规格书 SPEC | `docs/spec/` | `{spec-seq}-spec-{slug}-{YYMMDD-HHMM}--v{N}.md` |
 | 开发工单 ticket | `docs/tickets/` | `{spec-seq}-ticket-{slug}-{YYMMDD-HHMM}--v{N}.md` |
 | 产品需求文档 PRD | `docs/prd/` | `{seq}-prd-{slug}-{YYMMDD}-v{N}.md` |
+| 收件箱消息 | `docs/<收件角色>/inbox/` | `{seq}-{方向}-{slug}-{YYMMDDHHMM}.md`（无版本号，读毕即删） |
 
 规则：
 
@@ -118,6 +134,7 @@ git clone https://github.com/mattpocock/skills.git
 | `docs/tickets/` | DM（`sde` 更新证据） | 开发工单（ticket） | 与 SPEC 共用 `spec-seq` |
 | `docs/team.md` | PM | 团队契约（本文件） | 无 |
 | `docs/handoff/` | PM / DM | 交接说明（`{pm,dm}-{slug}-{YYMMDD-HHMM}-v{N}.md`，**仅在用户要求时写**） | 无 |
+| `docs/<收件角色>/inbox/` | 发送方写、收件方读后删 | 角色间消息（运行时通道，**不入库**） | 方向与 `{seq}` 见 §1.3 |
 
 1. 上述路径是**唯一允许位置**，不得写到 `docs/pd/`、`docs/dev/`、`docs/test/` 或其它任何位置，不得自建新的文档目录。
 2. 三个部门的产物目录**互不越界**：只读引用可以，移动/改名不可以。

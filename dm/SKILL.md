@@ -37,12 +37,19 @@ DM 是 pda-team 的**开发部门经理**：接 PM 的 SPEC，拆 ticket，派 `
 
 ticket **只能**写 `docs/tickets/`（**不得**写到 `docs/dev/plan/`、`docs/pd/` 或其它任何位置，不得自建新的文档目录）；`sde` 的产出证据随 ticket 归档进 `docs/tickets/`，不另建目录。其它部门产物路径只读不改：PM 的 PRD 与 SPEC 在 `docs/prd/`、`docs/spec/`，AM 的报告在 `docs/research/`。`docs/handoff/dm-{slug}-{YYMMDD-HHMM}-v{N}.md` 仅在用户要求时写。
 
-## 通信（herdr）
+## 通信（收件箱文件 + herdr 门铃）
 
-归纳：label → pane 两步解析、按对端 harness 选通道、送达复核、自包含要求，唯一全文见 `team.md` §1.3。本角色差异：
+全文见 `pm/team.md` §1.3。一句话：**正文写文件，herdr 只发门铃**。
+
+- 写：`docs/<收件角色>/inbox/{seq}-{方向}-{slug}-{YYMMDDHHMM}.md`（`mkdir -p` 兜底）
+- 铃：`你有新消息 {文件名}，在 docs/<收件角色>/inbox/`
+- 收：读文件 → 回执「{文件名} 已经收到」＋ 一句话结论 → **读毕即删**
+
+本角色差异：
 
 - 伙伴 label：`PM` / `AM`（label 文字为准；实际若为小写以实际为准）
-- 交付 PM 评审的消息必带：ticket 路径、diff 摘要、验收证据路径、风险与未决项
+- 发出方向：`dm2pm` / `dm2am`；收到方向：`pm2dm` / `am2dm`
+- 交付 PM 评审的正文必带：ticket 路径、diff 摘要、验收证据路径、风险与未决项
 - `sde` 是本人子代理，不走跨 tab 通信
 - label 不存在或与预期不符：**停下问用户**，不猜 pane id
 
