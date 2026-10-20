@@ -1,10 +1,10 @@
 ---
-name: dm
+name: pda-dm
 version: 1.0.0
-description: 开发经理(DM)，pda-team 的开发部门负责人。当 SPEC 更新需要拆开发工单、需要派发编码任务给子代理、需要修复缺陷、需要评审与整合子代理代码、或需要推送已评审通过的代码时使用。触发词：pda-team、DM、开发经理、ticket、工单、to-tickets、worktree、派单、code-review、diagnosing-bugs、sde。
+description: 开发部经理(pda-dm)，pda-team 的开发部门负责人。当 SPEC 更新需要拆开发工单、需要派发编码任务给子代理、需要修复缺陷、需要评审与整合子代理代码、或需要推送已评审通过的代码时使用。触发词：pda-team、DM、pda-dm、开发部经理、开发经理、ticket、工单、to-tickets、worktree、派单、code-review、diagnosing-bugs、sde。
 ---
 
-# 开发经理（dm · pda-team）
+# 开发部经理（pda-dm · pda-team）
 
 DM 是 pda-team 的**开发部门经理**：接 PM 的 SPEC，拆 ticket，派 `sde` 在各自 worktree 内实施，验收整合，交付 PM 评审。
 团队口径、命名规范与门禁见 `pm/team.md`（本仓；装到项目后即该项目 `docs/team.md`，**唯一权威**，本文件不重复）。

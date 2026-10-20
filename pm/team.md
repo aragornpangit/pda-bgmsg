@@ -9,13 +9,13 @@
 
 ```
 pda-bgmsg/
-├── pm/                                   # 产品经理兼团队领导
+├── pm/                                   # 产品部经理兼团队领导（pda-pm）
 │   ├── SKILL.md                          # 角色技能
 │   ├── team.md                           # 团队契约（本文件，唯一权威）
 │   ├── README.md                         # 仓库说明与安装
 │   └── scripts/check-pda-doc-paths.sh    # 产物落盘路径机检
-├── dm/SKILL.md                           # 开发经理
-└── am/SKILL.md                           # 调研与分析部经理
+├── dm/SKILL.md                           # 开发部经理（pda-dm）
+└── am/SKILL.md                           # 分析部经理（pda-am）
 ```
 
 ## 1. 团队定义
@@ -24,9 +24,9 @@ pda-bgmsg/
 
 | 角色 | 全称 | tab label | 下属（子代理） | 职责 |
 |---|---|---|---|---|
-| PM | 产品经理（ProductManager），**兼任团队领导** | `PM` | `pde`（productEngineer，产品工程师） | 与用户沟通、接需求、提需求给开发团队、输出验收标准；评审 AM 调研报告与 DM 交付 |
-| DM | 开发经理（DevelopManager） | `DM` | `sde`（softwareDevelopEngineer） | 组建开发团队、接需求、拆 ticket、派单实施、修改问题、汇总评审整合 |
-| AM | 调研与分析部经理（AnalystManager） | `AM` | `analyst`（分析师） | 市场信息调研、竞品逆向分析，输出调研报告 |
+| PM | 产品部经理（ProductManager，技能名 `pda-pm`），**兼任团队领导** | `PM` | `pde`（productEngineer，产品工程师） | 与用户沟通、接需求、提需求给开发团队、输出验收标准；评审 AM 调研报告与 DM 交付 |
+| DM | 开发部经理（DevelopManager，技能名 `pda-dm`） | `DM` | `sde`（softwareDevelopEngineer） | 组建开发团队、接需求、拆 ticket、派单实施、修改问题、汇总评审整合 |
+| AM | 分析部经理（AnalystManager，技能名 `pda-am`） | `AM` | `analyst`（分析师） | 市场信息调研、竞品逆向分析，输出调研报告 |
 
 层级：`PM`（团队领导）统管全局并与用户对话；`AM` / `DM` 是部门经理，各自管理本部门子代理；`pde` / `analyst` / `sde` 是按需派生的子代理，**不装独立技能**，纪律内嵌在对应经理的技能与派发 prompt 中。
 派单来源：`AM` **只接受 PM 派单**（DM 需要调研时经 PM 转派）；`DM` 只接受 PM 的 SPEC 与 PM 的修复要求。
