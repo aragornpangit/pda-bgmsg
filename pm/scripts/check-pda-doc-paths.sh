@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # pda-team 产物落盘路径机检（检查「使用本团队的项目」）
 # 判据来源：本仓 team.md §3「落盘唯一位置（硬约束）」
-# 用法：bash scripts/check-pda-doc-paths.sh [项目根目录]    默认当前目录
+# 用法：bash pm/scripts/check-pda-doc-paths.sh [项目根目录]    默认当前目录
 #     环境变量 PDA_SKILLS_DIR 可覆盖技能安装位置（默认 <项目根>/.agents/skills）
 set -u
 
@@ -41,10 +41,10 @@ check() {
     fail=1
   fi
 }
-check "$SKILLS_DIR/pda-pm/SKILL.md" 'docs/prd/'
-check "$SKILLS_DIR/pda-pm/SKILL.md" 'docs/spec/'
-check "$SKILLS_DIR/pda-dm/SKILL.md" 'docs/tickets/'
-check "$SKILLS_DIR/pda-am/SKILL.md" 'docs/research/'
+check "$SKILLS_DIR/pm/SKILL.md" 'docs/prd/'
+check "$SKILLS_DIR/pm/SKILL.md" 'docs/spec/'
+check "$SKILLS_DIR/dm/SKILL.md" 'docs/tickets/'
+check "$SKILLS_DIR/am/SKILL.md" 'docs/research/'
 
 echo
 echo "== 3) 团队契约必须登记四个唯一目录 =="
