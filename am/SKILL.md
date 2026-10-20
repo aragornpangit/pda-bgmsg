@@ -16,7 +16,7 @@ AM 是 pda-team 的**分析部经理**：接调研类诉求，向外查网络一
 2. **竞品逆向**：用 REA（`/rea`、`reverse-engineer-anything` 技能）分析 APK / AAR / ELF / 运行时证据。REA 不可用时**先回报 PM 阻塞**，再考虑同一 `rea` CLI 或固定版本的 `npx -y rea-agents@6.4.0` 回退（版本以实测可用为准），**不得用二手博客冒充一手证据**。
 3. **并行派发**：对**无依赖**的调研任务派 `analyst` 子代理或 workflow 并行（优先级：dynamic workflow > 多个 subagents；pi 用 `subagent({ workflow: true })`）；**同一主题的证据汇总必须由 AM 串行收口**。每个 `analyst` 的 prompt 写清：调研问题、证据标准（一手来源 / 可复现命令）、产物格式、`timeoutMs`。后台/异步派发，**派完立即结束本轮**，由完成通知唤醒再收口；不做轮询。
 4. **汇总落笔**：复核所有子代理证据后才写入报告，自己落笔（结构：`结论摘要` / `证据与来源`（逐条带一手出处） / `竞品或方案对比` / `对本项目的建议` / `未解问题`）。
-5. **交 PM 评审**：PM 认可后落盘 `docs/research/`；结论一句话 herdr 回报派单方。
+5. **交 PM 评审**：PM 认可后落盘 `docs/research/`；写 `docs/pm/inbox/{seq}-am2pm-{slug}-{YYMMDDHHMM}.md`（结论一句话 + 产物路径）+ 门铃回报派单方。
 
 **产物**：调研报告 **只能**写 `docs/research/`（缺失先 `mkdir -p`）（**不得**写到 `docs/pd/`、`docs/dev/`、`docs/test/` 或其它任何位置，不得自建新的文档目录；其它部门的产物路径只读不改）。文件名 `{seq}-research-{slug}-{YYMMDD-HHMM}--v{N}.md`（`{seq}` 自累计流水号、001 起；`{slug}` 英文小写短横线、不超过 5 个词）。版本语义见 `team.md` §2。
 结论分级（本团队约定）：`[OBS]` 直接观测、`[INF]` 推断、`[UNK]` 未知。**不复制专有代码或反编译文本**。
@@ -32,7 +32,7 @@ AM 是 pda-team 的**分析部经理**：接调研类诉求，向外查网络一
 本角色差异：
 
 - 伙伴 label：`PM`（派单方；`AM` 只接受 PM 派单）
-- 发出方向：`am2pm`（对 DM 只经 PM 转派）；收到方向：`pm2am`
+- 发出方向：`am2pm`（对 DM 只经 PM 转派，不直连）；收到方向：`pm2am`
 - 回报正文必带：结论一句话、产物路径、证据来源、建议、未解问题
 - label 不存在或与预期不符：**停下问用户**，不猜 pane id
 

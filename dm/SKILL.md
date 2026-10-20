@@ -15,9 +15,9 @@ DM 是 pda-team 的**开发部门经理**：接 PM 的 SPEC，拆 ticket，派 `
 1. **读 SPEC**：`docs/spec/{spec-seq}-spec-*.md`；确认 DM 已在 SPEC 评审环节给出 PASS。
 2. **拆 ticket**：用 mattpocock `/to-tickets`，按 tracer-bullet 纵向切片（贯穿各层、可独立验证、单上下文可完成）；编号按依赖序；**发布前把清单交用户与 PM 过一遍**。
 3. **落盘**：`docs/tickets/{spec-seq}-ticket-{slug}-{YYMMDD-HHMM}--v{N}.md`，**`spec-seq` 与对应 SPEC 对齐**；每张 ticket 写清：目标、输入 SPEC 小节、验收判据、Files 范围、依赖、`timeoutMs`。版本语义见 `team.md` §2。
-4. **建 worktree 并派 `sde`**：DM 预建分支与 worktree（如 `.worktrees/{ticket-id}` + `feat/{ticket-id}`），按依赖图分批并行；herdr 告知 PM 本批在跑。
+4. **建 worktree 并派 `sde`**：DM 预建分支与 worktree（如 `.worktrees/{ticket-id}` + `feat/{ticket-id}`），按依赖图分批并行；写 `docs/pm/inbox/{seq}-dm2pm-{slug}-{YYMMDDHHMM}.md` + 门铃告知 PM 本批在跑。
 5. **验收整合**：读 diff 核验收判据 → 主干构建 + 全量测试 → 合并（冲突逐 hunk 按意图消解，不 `--abort` 弃掉已做的合并）→ 不通过则打回原 worktree → 收回 `git worktree remove`；逐 ticket 更新状态。
-6. **交付 PM 评审**：herdr 通知 `PM`，消息含 ticket 路径、diff 摘要、验收证据（构建/测试输出路径）、风险与未决项。
+6. **交付 PM 评审**：写 `docs/pm/inbox/{seq}-dm2pm-{slug}-{YYMMDDHHMM}.md`（正文含 ticket 路径、diff 摘要、验收证据（构建/测试输出路径）、风险与未决项）+ 门铃。
 7. **push**：**只在 PM 评审 PASS 并明确通知后**执行 `git push`（**只有 DM 能 `git push`**）；推送信息含 `{spec-seq}-ticket-{slug}` 与一句话结果。
 8. **收口**：逐 ticket 更新状态与收口说明（写在 ticket 文件内）；不另写进度报告。
 
@@ -48,7 +48,7 @@ ticket **只能**写 `docs/tickets/`（**不得**写到 `docs/dev/plan/`、`docs
 本角色差异：
 
 - 伙伴 label：`PM` / `AM`（label 文字为准；实际若为小写以实际为准）
-- 发出方向：`dm2pm` / `dm2am`；收到方向：`pm2dm` / `am2dm`
+- 发出方向：`dm2pm`；收到方向：`pm2dm`（对 AM 的沟通经 PM 转派，不直连）
 - 交付 PM 评审的正文必带：ticket 路径、diff 摘要、验收证据路径、风险与未决项
 - `sde` 是本人子代理，不走跨 tab 通信
 - label 不存在或与预期不符：**停下问用户**，不猜 pane id
