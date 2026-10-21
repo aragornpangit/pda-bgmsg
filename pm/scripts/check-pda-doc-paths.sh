@@ -14,8 +14,8 @@ fail=0
 echo "项目根：  $ROOT"
 echo "技能目录：$SKILLS_DIR"
 echo
-echo "== 1) 四个产物目录必须存在 =="
-for d in docs/prd docs/spec docs/research docs/tickets; do
+echo "== 1) 五个产物目录必须存在 =="
+for d in docs/pd/prd docs/spec docs/research docs/tickets docs/dev/arch; do
   if [ -d "$ROOT/$d" ]; then
     echo "OK   目录存在            $d"
   else
@@ -41,15 +41,15 @@ check() {
     fail=1
   fi
 }
-check "$SKILLS_DIR/pm/SKILL.md" 'docs/prd/'
+check "$SKILLS_DIR/pm/SKILL.md" 'docs/pd/prd/'
 check "$SKILLS_DIR/pm/SKILL.md" 'docs/spec/'
 check "$SKILLS_DIR/dm/SKILL.md" 'docs/tickets/'
 check "$SKILLS_DIR/am/SKILL.md" 'docs/research/'
 
 echo
-echo "== 3) 团队契约必须登记四个唯一目录 =="
+echo "== 3) 团队契约必须登记五个唯一目录 =="
 if [ -f "$CONTRACT" ]; then
-  for d in 'docs/prd/' 'docs/spec/' 'docs/tickets/' 'docs/research/'; do
+  for d in 'docs/pd/prd/' 'docs/spec/' 'docs/tickets/' 'docs/research/' 'docs/dev/arch/'; do
     if grep -q -- "$d" "$CONTRACT"; then
       echo "OK   契约含              $d"
     else

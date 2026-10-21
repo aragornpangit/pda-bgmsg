@@ -111,7 +111,8 @@ git clone https://github.com/mattpocock/skills.git
 | 调研报告 | `docs/research/` | `{seq}-research-{slug}-{YYMMDD-HHMM}--v{N}.md` |
 | 规格书 SPEC | `docs/spec/` | `{spec-seq}-spec-{slug}-{YYMMDD-HHMM}--v{N}.md` |
 | 开发工单 ticket | `docs/tickets/` | `{spec-seq}-ticket-{slug}-{YYMMDD-HHMM}--v{N}.md` |
-| 产品需求文档 PRD | `docs/prd/` | `{seq}-prd-{slug}-{YYMMDD}-v{N}.md` |
+| 产品需求文档 PRD | `docs/pd/prd/` | `{seq}-prd-{slug}-{YYMMDD}-v{N}.md` |
+| 软件设计架构 | `docs/dev/arch/` | `{seq}-arch-{slug}-{YYMMDD-HHMM}--v{N}.md` |
 | 收件箱消息 | `docs/<收件角色>/inbox/` | `{seq}-{方向}-{slug}-{YYMMDDHHMM}.md`（无版本号，读毕即删） |
 
 规则：
@@ -128,7 +129,8 @@ git clone https://github.com/mattpocock/skills.git
 
 | 唯一目录 | 负责人 | 产物 | 对齐要求 |
 |---|---|---|---|
-| `docs/prd/` | PM | 产品需求文档（PRD） | `{seq}` 与 SPEC 独立编号 |
+| `docs/pd/prd/` | PM | 产品需求文档（PRD） | `{seq}` 与 SPEC 独立编号 |
+| `docs/dev/arch/` | DM（PM 评审） | 软件设计架构文档 | 与 SPEC／ticket 对齐时共用 `spec-seq` |
 | `docs/spec/` | PM | 产品规格书（SPEC，含验收标准） | 与 ticket 共用 `spec-seq` |
 | `docs/research/` | AM | 市场调研与竞品逆向报告 | 无 |
 | `docs/tickets/` | DM（`sde` 更新证据） | 开发工单（ticket） | 与 SPEC 共用 `spec-seq` |
@@ -136,15 +138,15 @@ git clone https://github.com/mattpocock/skills.git
 | `docs/handoff/` | PM / DM | 交接说明（`{pm,dm}-{slug}-{YYMMDD-HHMM}-v{N}.md`，**仅在用户要求时写**） | 无 |
 | `docs/<收件角色>/inbox/` | 发送方写、收件方读后删 | 角色间消息（运行时通道，**不入库**） | 方向与 `{seq}` 见 §1.3 |
 
-1. 上述路径是**唯一允许位置**，不得写到 `docs/pd/`、`docs/dev/`、`docs/test/` 或其它任何位置，不得自建新的文档目录。
+1. 上述路径是**唯一允许位置**，不得写到 `docs/pd/`（PRD 落 `docs/pd/prd/` 除外）、`docs/dev/`（架构落 `docs/dev/arch/` 除外）、`docs/test/` 或其它任何位置，不得自建新的文档目录。
 2. 三个部门的产物目录**互不越界**：只读引用可以，移动/改名不可以。
-3. 旧体系（`docs/pd/`、`docs/dev/`、`docs/test/`）只保留历史，**不再接收新产物**；历史文件不改名、不搬迁（历史事实留痕）。
+3. 旧体系（`docs/pd/` 除 `prd/` 外、`docs/dev/` 除 `arch/` 外、`docs/test/`）只保留历史，**不再接收新产物**；历史文件不改名、不搬迁（历史事实留痕）。**例外（2026-10-21 用户裁定）**：① **PRD 类别复活**，PRD 落 `docs/pd/prd/`（原 `docs/prd/` 作废）；② 新开 `docs/dev/arch/` 存软件设计架构。
 4. 机检口径：§7 的脚本只校验「四个产物目录存在、三个技能各自指向自己的目录、契约登记齐全、负样本被拒绝」；它**不校验单个文件的落盘路径**，新产物靠本表与评审把关。
 
 ## 4. 工作流程
 
 1. **AM 调研**：AM 完成需求相关的市场信息调研与竞品逆向分析，输出调研报告，**经 PM 评审后落盘** `docs/research/`。
-2. **PM 出 PRD 与 SPEC**：PM 基于《分析师调研报告》与《用户交流信息》，输出 PRD 与 SPEC（SPEC 含验收标准），**经 DM 评审后落盘** `docs/prd/`、`docs/spec/`。
+2. **PM 出 PRD 与 SPEC**：PM 基于《分析师调研报告》与《用户交流信息》，输出 PRD 与 SPEC（SPEC 含验收标准），**经 DM 评审后落盘** `docs/pd/prd/`、`docs/spec/`。
 3. **DM 拆 ticket**：DM 基于 SPEC，用 `/to-tickets` 把任务拆成与 SPEC 对应的开发工单，落盘 `docs/tickets/`；DM 负责汇总、评审、整合团队成员的结果。
 4. **DM 交付评审**：DM 完成一个 ticket，把代码提交给 PM **部门**评审；一个 ticket 对应一个 SPEC。链路：`pde` 逐条对照 SPEC 核验并回报 → PM 复核给结论 → **PM 通知 DM** → DM 才执行 `git push`。
 5. **并行**：对无依赖关系的任务，PM / DM / AM 都必须安排团队成员并行（优先级：dynamic workflow > 多个 subagents 并行），不得为省事而串行。
@@ -179,7 +181,8 @@ SPEC 必须自包含：每条 User Story 都能转成 ticket 与用例。
 | 门禁 | 提交方 | 评审方 | 通过条件 |
 |---|---|---|---|
 | 调研报告 | AM | PM | PM 认可结论与证据来源，落盘 `docs/research/` |
-| PRD 与 SPEC | PM | DM | DM 认可可实施性与切片粒度，落盘 `docs/prd/`、`docs/spec/` |
+| PRD 与 SPEC | PM | DM | DM 认可可实施性与切片粒度，落盘 `docs/pd/prd/`、`docs/spec/` |
+| 软件设计架构 | DM | PM | 描述结构与真实代码一致、不混写未来态，落盘 `docs/dev/arch/` |
 | ticket 代码 | DM | PM 部门（`pde` 核验 → PM 复核） | 逐条对照 SPEC 验收标准全部通过；PM 通知 DM 后方可 push |
 | 跨部门分歧 | 任一方 | PM | PM 裁决并回结论 |
 
@@ -193,4 +196,8 @@ SPEC 必须自包含：每条 User Story 都能转成 ticket 与用例。
 bash pm/scripts/check-pda-doc-paths.sh
 ```
 
-检查四件事：四个产物目录存在、`pm` / `dm` / `am` 各自指向自己的唯一目录、本契约登记齐全、负样本能被正确拒绝。**改路径规范后必须重跑**。
+检查五件事：五个产物目录存在（`docs/pd/prd`、`docs/spec`、`docs/research`、`docs/tickets`、`docs/dev/arch`）、`pm` / `dm` / `am` 各自指向自己的唯一目录、本契约登记齐全、负样本能被正确拒绝。**改路径规范后必须重跑**。
+
+## 8. 变更记录
+
+- **2026-10-21（用户裁定）**：① PRD 类别**复活**，落盘路径由 `docs/prd/` 改为 `docs/pd/prd/`（`docs/prd/` 作废）；② 新增 `docs/dev/arch/`——**软件设计架构**落点，DM 落盘、PM 评审，命名 `{seq}-arch-{slug}-{YYMMDD-HHMM}--v{N}.md`。
