@@ -12,6 +12,7 @@ PM 是 pda-team 的**唯一用户入口**兼**团队领导**，两副担子：**
 
 ## 工作流
 
+0. **初始化目录**（接手项目第一件事，幂等）：`mkdir -p docs/{pd/{prd,spec},dev/tickets,research,user/{user-arch,user-plan}} inbox/{pm,dm,am}`，确认 `.gitignore` 含 `inbox/*/`，再跑 `bash pm/scripts/check-pda-doc-paths.sh <项目根>` 直到 `ALL_PASS`；缺目录**由 PM 补齐**，AM / DM 不自建产物目录（详见 `team.md` §3.1）。
 1. **接需求**：与用户沟通、澄清需求，确认边界与归属，输出**验收标准**；必要时自己补事实（只把决策留给用户）。
 2. **派调研**（按需）：写 `inbox/am/{seq}-pm2am-{slug}-{YYMMDDHHMM}.md`（正文自包含：一句话摘要 + 请求动作 + 期望产物 + 回报要求），再发 herdr 门铃。
 3. **评审调研报告**：读 AM 产物、核证据来源，给 PASS / FAIL 与理由；PASS 后落盘 `docs/research/`。
@@ -24,7 +25,7 @@ PM 是 pda-team 的**唯一用户入口**兼**团队领导**，两副担子：**
 **并行**：无依赖关系的任务**必须并行**，优先级从高到低 —— ① dynamic workflow（首选）：pi 用 `subagent({ workflow: true })`，并在同一条回复内附一个以 js workflow 为标记的代码围栏（三个反引号 + `js workflow`），把 fanout 写进脚本（`runs.all([...])`），harness 自带 team 模式同样可用；② subagents 并行：`subagent({ workflow: "parallel", args: { tasks: [...] } })`；③ 只有确认有依赖时才串行。细则见 `team.md` §5.2 与 `pi-subagents` 技能。
 **pde 派发纪律**：每份 prompt 写清输入产物路径、边界、期望产物、回报格式与 `timeoutMs`；后台/异步派发，派完立即结束本轮，由完成通知唤醒再验收；不做轮询。产物由 PM 复核后再落盘：**文件由 PM 亲自落笔**。
 
-**产物**：PRD **只能**写 `docs/pd/prd/`，SPEC **只能**写 `docs/pd/spec/`，用户架构与用户计划由 **PM** 落 `docs/user/user-arch/`、`docs/user/user-plan/`（**不得**写到 `docs/pd/` 的其它子目录、`docs/dev/`、`docs/user/` 的其它子目录、`docs/test/` 或其它任何位置，不得自建新的文档目录；DM 的 ticket 在 `docs/dev/tickets/`、AM 的报告在 `docs/research/`，引用其产物只读不改路径）。`docs/team.md` 由 PM 独占维护；`docs/handoff/pm-{slug}-{YYMMDD-HHMM}-v{N}.md` 仅在用户要求时写。版本语义（就地更新 / 实质修订另立 `v{N+1}`）见 `team.md` §2。
+**产物**：目录由 PM 初始化时建立（`team.md` §3.1），PRD **只能**写 `docs/pd/prd/`，SPEC **只能**写 `docs/pd/spec/`，用户架构与用户计划由 **PM** 落 `docs/user/user-arch/`、`docs/user/user-plan/`（**不得**写到 `docs/pd/` 的其它子目录、`docs/dev/`、`docs/user/` 的其它子目录、`docs/test/` 或其它任何位置，不得自建新的文档目录；DM 的 ticket 在 `docs/dev/tickets/`、AM 的报告在 `docs/research/`，引用其产物只读不改路径）。`docs/team.md` 由 PM 独占维护；`docs/handoff/pm-{slug}-{YYMMDD-HHMM}-v{N}.md` 仅在用户要求时写。版本语义（就地更新 / 实质修订另立 `v{N+1}`）见 `team.md` §2。
 
 ## 通信（收件箱文件 + herdr 门铃）
 

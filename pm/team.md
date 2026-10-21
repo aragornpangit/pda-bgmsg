@@ -143,7 +143,24 @@ git clone https://github.com/mattpocock/skills.git
 1. 上述路径是**唯一允许位置**，不得写到 `docs/pd/`（除 `prd/`、`spec/`）、`docs/dev/`（除 `tickets/`）、`docs/user/`（除 `user-arch/`、`user-plan/`）、`docs/test/` 或其它任何位置；收件箱只在项目根 `inbox/` 下，不进 `docs/`；不得自建新的文档目录。
 2. 三个部门的产物目录**互不越界**：只读引用可以，移动/改名不可以。
 3. 旧体系（`docs/pd/` 除 `prd/`、`spec/` 外，`docs/dev/` 除 `tickets/` 外，`docs/test/`）只保留历史，**不再接收新产物**；历史文件不改名、不搬迁（历史事实留痕）。**现行口径（2026-10-21 用户裁定·第二次修订）**：① PRD 落 `docs/pd/prd/`；② SPEC 由 `docs/spec/` 改为 `docs/pd/spec/`；③ ticket 由 `docs/tickets/` 改为 `docs/dev/tickets/`；④ 新增 `docs/user/user-arch/`（用户架构）与 `docs/user/user-plan/`（用户计划），均由 PM 落盘；⑤ `docs/dev/arch/` **作废**，不再单独设架构目录；⑥ 收件箱由 `docs/<角色>/inbox/` 移到项目根 `inbox/<角色>/`。
-4. 机检口径：§7 的脚本只校验「四个产物目录存在、三个技能各自指向自己的目录、契约登记齐全、负样本被拒绝」；它**不校验单个文件的落盘路径**，新产物靠本表与评审把关。
+4. **目录初始化由 PM 负责**：PM 接手一个项目时先检查再补齐（见 §3.1），产物目录不由 AM / DM 自建。
+5. 机检口径：§7 的脚本只校验「六个产物目录与根 `inbox/` 存在、三个技能各自指向自己的目录、契约登记齐全、负样本被拒绝」；它**不校验单个文件的落盘路径**，新产物靠本表与评审把关。
+
+### 3.1 初始化（PM 负责，幂等）
+
+PM 接手项目的**第一件事**：检查目录，缺什么建什么。可重复执行，已存在则不动：
+
+```bash
+cd <项目根>
+mkdir -p docs/{pd/{prd,spec},dev/tickets,research,user/{user-arch,user-plan}} inbox/{pm,dm,am}
+grep -qxF 'inbox/*/' .gitignore 2>/dev/null || echo 'inbox/*/' >> .gitignore   # 收件箱不入库
+bash pm/scripts/check-pda-doc-paths.sh .
+```
+
+- **完成判据**：机检输出 `ALL_PASS`。缺目录时脚本报 `FAIL 目录缺失`，PM 补齐后重跑。
+- **只建目录、不建产物**：空目录不预置占位文件，避免被误认为已有交付物。
+- **AM / DM 不自建产物目录**：发现自己的目标目录缺失，回报 PM（收件箱目录属运行时通道，可按需 `mkdir -p` 兜底）。
+- 契约文件 `docs/team.md` 与技能安装不在本步骤内（安装见 `README.md`）。
 
 ## 4. 工作流程
 
@@ -205,3 +222,4 @@ bash pm/scripts/check-pda-doc-paths.sh
 - **2026-10-21（用户裁定）**：① PRD 类别**复活**，落盘路径由 `docs/prd/` 改为 `docs/pd/prd/`（`docs/prd/` 作废）；② 新增 `docs/dev/arch/`——**软件设计架构**落点，DM 落盘、PM 评审，命名 `{seq}-arch-{slug}-{YYMMDD-HHMM}--v{N}.md`。
 - **2026-10-21（用户裁定·第二次）**：目录结构重排 —— ① 收件箱移到项目根 `inbox/<pm|dm|am>/`，不再进 `docs/`（`.gitignore` 用 `inbox/*/`）；② SPEC 由 `docs/spec/` 改为 `docs/pd/spec/`；③ ticket 由 `docs/tickets/` 改为 `docs/dev/tickets/`；④ 新增 `docs/user/user-arch/`、`docs/user/user-plan/`（均 PM 落盘），`docs/dev/arch/` 作废。
 - **2026-10-21（用户裁定·第三次）**：序号按产物类别拆分 —— PRD `{prd-seq}`、调研报告 `{research-seq}`、用户架构 `{user-arch-seq}`、用户计划 `{user-plan-seq}`，各自独立、类别内自累计；SPEC 与 ticket 仍共用 `{spec-seq}`；收件箱消息保留 `{seq}` 消息流水号。
+- **2026-10-21（用户裁定·第四次）**：目录由 **PM 初始化时检查并补齐**（新增 §3.1，幂等命令 + 完成判据 `ALL_PASS`）；AM / DM 不自建产物目录，缺失时回报 PM。
