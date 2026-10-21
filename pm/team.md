@@ -60,7 +60,7 @@ HERDR_ENV=1 herdr tab create --label <ROLE> --cwd "$PWD"
 
 **第二步 写收件箱文件**
 
-- 路径：收件方的 `docs/<收件角色>/inbox/{seq}-{方向}-{slug}-{YYMMDDHHMM}.md`（`<收件角色>` ∈ `pm` / `dm` / `am`；目录不存在先 `mkdir -p`）
+- 路径：**项目根目录**下的 `inbox/<收件角色>/{seq}-{方向}-{slug}-{YYMMDDHHMM}.md`（`<收件角色>` ∈ `pm` / `dm` / `am`；**不在 `docs/` 下**；目录不存在先 `mkdir -p`）
 - `{seq}`：自累计流水号，001 起，一条消息一个号（与 SPEC 的 `spec-seq` 无关）
 - `{方向}`：发送方2收件方，取值 `pm2dm` / `dm2pm` / `pm2am` / `am2pm`（DM 与 AM 之间不直连，一律经 PM 转派）
 - `{slug}`：英文小写短横线，不超过 5 个词
@@ -71,20 +71,20 @@ HERDR_ENV=1 herdr tab create --label <ROLE> --cwd "$PWD"
 
 | 对端 harness | 门铃 |
 |---|---|
-| pi-coding-agent / codex / opencode | `HERDR_ENV=1 herdr agent prompt <pane 或已注册 agent 名> '你有新消息 {文件名}，在 docs/<收件角色>/inbox/'` |
-| codebuddy（cbc） | `HERDR_ENV=1 herdr pane send-text <pane> '你有新消息 {文件名}，在 docs/<收件角色>/inbox/'` 紧跟 `HERDR_ENV=1 herdr pane send-keys <pane> enter` |
+| pi-coding-agent / codex / opencode | `HERDR_ENV=1 herdr agent prompt <pane 或已注册 agent 名> '你有新消息 {文件名}，在 inbox/<收件角色>/'` |
+| codebuddy（cbc） | `HERDR_ENV=1 herdr pane send-text <pane> '你有新消息 {文件名}，在 inbox/<收件角色>/'` 紧跟 `HERDR_ENV=1 herdr pane send-keys <pane> enter` |
 
 发送前**必须先读目标面板**（`herdr pane read`）；若对方输入区有用户未提交内容，不得注入，改为等待或请用户转达。
 
 **第四步 收件方处理**
 
-1. 读 `docs/<自己>/inbox/` 下的新文件，读完**立刻回执**给发送方：`{文件名} 已经收到` ＋ 一句话结论或下一步（回执走 herdr 消息，不另写文件）；
+1. 读 `inbox/<自己>/` 下的新文件，读完**立刻回执**给发送方：`{文件名} 已经收到` ＋ 一句话结论或下一步（回执走 herdr 消息，不另写文件）；
 2. **读毕即删**该文件（收件箱里只允许存在未读消息）；
 3. 需要回正文时，按同样规则反向写文件 + 门铃，不把长正文塞进回执。
 
 **送达判定**：以**对方回执**为准。`agent prompt` 返回 `"type":"agent_prompted"`、`send-text + send-keys` 返回 exit 0 只算「已投递」，不算「已收到」；无回执时**问**，不重复投递。
 
-**不入库**：收件箱是运行时通道，不是交付物；被服务项目的 `.gitignore` 必须含 `docs/*/inbox/`。
+**不入库**：收件箱是运行时通道，不是交付物；被服务项目的 `.gitignore` 必须含 `inbox/*/`。
 
 ### 1.4 依赖的 harness 技能（mattpocock）
 
@@ -109,18 +109,19 @@ git clone https://github.com/mattpocock/skills.git
 | 产物 | 目录 | 文件名 |
 |---|---|---|
 | 调研报告 | `docs/research/` | `{seq}-research-{slug}-{YYMMDD-HHMM}--v{N}.md` |
-| 规格书 SPEC | `docs/spec/` | `{spec-seq}-spec-{slug}-{YYMMDD-HHMM}--v{N}.md` |
-| 开发工单 ticket | `docs/tickets/` | `{spec-seq}-ticket-{slug}-{YYMMDD-HHMM}--v{N}.md` |
 | 产品需求文档 PRD | `docs/pd/prd/` | `{seq}-prd-{slug}-{YYMMDD}-v{N}.md` |
-| 软件设计架构 | `docs/dev/arch/` | `{seq}-arch-{slug}-{YYMMDD-HHMM}--v{N}.md` |
-| 收件箱消息 | `docs/<收件角色>/inbox/` | `{seq}-{方向}-{slug}-{YYMMDDHHMM}.md`（无版本号，读毕即删） |
+| 规格书 SPEC | `docs/pd/spec/` | `{spec-seq}-spec-{slug}-{YYMMDD-HHMM}--v{N}.md` |
+| 开发工单 ticket | `docs/dev/tickets/` | `{spec-seq}-ticket-{slug}-{YYMMDD-HHMM}--v{N}.md` |
+| 用户架构 | `docs/user/user-arch/` | `{seq}-arch-{slug}-{YYMMDD-HHMM}--v{N}.md` |
+| 用户计划 | `docs/user/user-plan/` | `{seq}-plan-{slug}-{YYMMDD-HHMM}--v{N}.md` |
+| 收件箱消息 | `inbox/<收件角色>/` | `{seq}-{方向}-{slug}-{YYMMDDHHMM}.md`（无版本号，读毕即删） |
 
 规则：
 
 1. **spec 与 ticket 必须对齐 `spec-seq`**：同一需求的 SPEC 与其 ticket 用同一个 `spec-seq` 前缀。
 2. **版本语义**：版本内小步更新**就地改同一文件**；实质修订**另立新版本号文件**（新时间戳、`v{N+1}`），并在旧文件头部就地标注「已被 v N+1 取代」。
 3. PRD 按需求方给定的格式只有日期（`YYMMDD`），无时刻；其余产物一律带时刻。
-4. **独立编号**：PRD 的 `{seq}` 与 SPEC 的 `{spec-seq}` 各自独立；只有 SPEC 与 ticket 必须共用同一个 `spec-seq`。
+4. **独立编号**：PRD、用户架构、用户计划的 `{seq}` 与 SPEC 的 `{spec-seq}` 相互独立；只有 SPEC 与 ticket 必须共用同一个 `spec-seq`。
 5. 历史笔误留痕：需求原文的 `ver{seq}`、`YYMMDD-v{seq}` 写法**已作废**，一律以本表为准，历史文件不改名。
 
 ## 3. 目录职责
@@ -130,24 +131,25 @@ git clone https://github.com/mattpocock/skills.git
 | 唯一目录 | 负责人 | 产物 | 对齐要求 |
 |---|---|---|---|
 | `docs/pd/prd/` | PM | 产品需求文档（PRD） | `{seq}` 与 SPEC 独立编号 |
-| `docs/dev/arch/` | DM（PM 评审） | 软件设计架构文档 | 与 SPEC／ticket 对齐时共用 `spec-seq` |
-| `docs/spec/` | PM | 产品规格书（SPEC，含验收标准） | 与 ticket 共用 `spec-seq` |
+| `docs/pd/spec/` | PM | 产品规格书（SPEC，含验收标准） | 与 ticket 共用 `spec-seq` |
+| `docs/dev/tickets/` | DM（`sde` 更新证据） | 开发工单（ticket） | 与 SPEC 共用 `spec-seq` |
 | `docs/research/` | AM | 市场调研与竞品逆向报告 | 无 |
-| `docs/tickets/` | DM（`sde` 更新证据） | 开发工单（ticket） | 与 SPEC 共用 `spec-seq` |
+| `docs/user/user-arch/` | PM | 用户架构文档 | 无 |
+| `docs/user/user-plan/` | PM | 用户计划文档 | 无 |
 | `docs/team.md` | PM | 团队契约（本文件） | 无 |
 | `docs/handoff/` | PM / DM | 交接说明（`{pm,dm}-{slug}-{YYMMDD-HHMM}-v{N}.md`，**仅在用户要求时写**） | 无 |
-| `docs/<收件角色>/inbox/` | 发送方写、收件方读后删 | 角色间消息（运行时通道，**不入库**） | 方向与 `{seq}` 见 §1.3 |
+| `inbox/<收件角色>/` | 发送方写、收件方读后删 | 角色间消息（运行时通道，**不入库**，**在项目根目录、不在 `docs/` 下**） | 方向与 `{seq}` 见 §1.3 |
 
-1. 上述路径是**唯一允许位置**，不得写到 `docs/pd/`（PRD 落 `docs/pd/prd/` 除外）、`docs/dev/`（架构落 `docs/dev/arch/` 除外）、`docs/test/` 或其它任何位置，不得自建新的文档目录。
+1. 上述路径是**唯一允许位置**，不得写到 `docs/pd/`（除 `prd/`、`spec/`）、`docs/dev/`（除 `tickets/`）、`docs/user/`（除 `user-arch/`、`user-plan/`）、`docs/test/` 或其它任何位置；收件箱只在项目根 `inbox/` 下，不进 `docs/`；不得自建新的文档目录。
 2. 三个部门的产物目录**互不越界**：只读引用可以，移动/改名不可以。
-3. 旧体系（`docs/pd/` 除 `prd/` 外、`docs/dev/` 除 `arch/` 外、`docs/test/`）只保留历史，**不再接收新产物**；历史文件不改名、不搬迁（历史事实留痕）。**例外（2026-10-21 用户裁定）**：① **PRD 类别复活**，PRD 落 `docs/pd/prd/`（原 `docs/prd/` 作废）；② 新开 `docs/dev/arch/` 存软件设计架构。
+3. 旧体系（`docs/pd/` 除 `prd/`、`spec/` 外，`docs/dev/` 除 `tickets/` 外，`docs/test/`）只保留历史，**不再接收新产物**；历史文件不改名、不搬迁（历史事实留痕）。**现行口径（2026-10-21 用户裁定·第二次修订）**：① PRD 落 `docs/pd/prd/`；② SPEC 由 `docs/spec/` 改为 `docs/pd/spec/`；③ ticket 由 `docs/tickets/` 改为 `docs/dev/tickets/`；④ 新增 `docs/user/user-arch/`（用户架构）与 `docs/user/user-plan/`（用户计划），均由 PM 落盘；⑤ `docs/dev/arch/` **作废**，不再单独设架构目录；⑥ 收件箱由 `docs/<角色>/inbox/` 移到项目根 `inbox/<角色>/`。
 4. 机检口径：§7 的脚本只校验「四个产物目录存在、三个技能各自指向自己的目录、契约登记齐全、负样本被拒绝」；它**不校验单个文件的落盘路径**，新产物靠本表与评审把关。
 
 ## 4. 工作流程
 
 1. **AM 调研**：AM 完成需求相关的市场信息调研与竞品逆向分析，输出调研报告，**经 PM 评审后落盘** `docs/research/`。
-2. **PM 出 PRD 与 SPEC**：PM 基于《分析师调研报告》与《用户交流信息》，输出 PRD 与 SPEC（SPEC 含验收标准），**经 DM 评审后落盘** `docs/pd/prd/`、`docs/spec/`。
-3. **DM 拆 ticket**：DM 基于 SPEC，用 `/to-tickets` 把任务拆成与 SPEC 对应的开发工单，落盘 `docs/tickets/`；DM 负责汇总、评审、整合团队成员的结果。
+2. **PM 出 PRD 与 SPEC**：PM 基于《分析师调研报告》与《用户交流信息》，输出 PRD 与 SPEC（SPEC 含验收标准），**经 DM 评审后落盘** `docs/pd/prd/`、`docs/pd/spec/`。
+3. **DM 拆 ticket**：DM 基于 SPEC，用 `/to-tickets` 把任务拆成与 SPEC 对应的开发工单，落盘 `docs/dev/tickets/`；DM 负责汇总、评审、整合团队成员的结果。
 4. **DM 交付评审**：DM 完成一个 ticket，把代码提交给 PM **部门**评审；一个 ticket 对应一个 SPEC。链路：`pde` 逐条对照 SPEC 核验并回报 → PM 复核给结论 → **PM 通知 DM** → DM 才执行 `git push`。
 5. **并行**：对无依赖关系的任务，PM / DM / AM 都必须安排团队成员并行（优先级：dynamic workflow > 多个 subagents 并行），不得为省事而串行。
 
@@ -181,8 +183,8 @@ SPEC 必须自包含：每条 User Story 都能转成 ticket 与用例。
 | 门禁 | 提交方 | 评审方 | 通过条件 |
 |---|---|---|---|
 | 调研报告 | AM | PM | PM 认可结论与证据来源，落盘 `docs/research/` |
-| PRD 与 SPEC | PM | DM | DM 认可可实施性与切片粒度，落盘 `docs/pd/prd/`、`docs/spec/` |
-| 软件设计架构 | DM | PM | 描述结构与真实代码一致、不混写未来态，落盘 `docs/dev/arch/` |
+| PRD 与 SPEC | PM | DM | DM 认可可实施性与切片粒度，落盘 `docs/pd/prd/`、`docs/pd/spec/` |
+| 用户架构 / 用户计划 | PM | 用户 | 结构与真实代码一致、不混写未来态，落盘 `docs/user/user-arch/`、`docs/user/user-plan/` |
 | ticket 代码 | DM | PM 部门（`pde` 核验 → PM 复核） | 逐条对照 SPEC 验收标准全部通过；PM 通知 DM 后方可 push |
 | 跨部门分歧 | 任一方 | PM | PM 裁决并回结论 |
 
@@ -196,8 +198,9 @@ SPEC 必须自包含：每条 User Story 都能转成 ticket 与用例。
 bash pm/scripts/check-pda-doc-paths.sh
 ```
 
-检查五件事：五个产物目录存在（`docs/pd/prd`、`docs/spec`、`docs/research`、`docs/tickets`、`docs/dev/arch`）、`pm` / `dm` / `am` 各自指向自己的唯一目录、本契约登记齐全、负样本能被正确拒绝。**改路径规范后必须重跑**。
+检查四件事：六个产物目录存在（`docs/pd/prd`、`docs/pd/spec`、`docs/dev/tickets`、`docs/research`、`docs/user/user-arch`、`docs/user/user-plan`）＋ 根目录 `inbox/` 存在、`pm` / `dm` / `am` 各自指向自己的唯一目录、本契约登记齐全、负样本能被正确拒绝。**改路径规范后必须重跑**。
 
 ## 8. 变更记录
 
 - **2026-10-21（用户裁定）**：① PRD 类别**复活**，落盘路径由 `docs/prd/` 改为 `docs/pd/prd/`（`docs/prd/` 作废）；② 新增 `docs/dev/arch/`——**软件设计架构**落点，DM 落盘、PM 评审，命名 `{seq}-arch-{slug}-{YYMMDD-HHMM}--v{N}.md`。
+- **2026-10-21（用户裁定·第二次）**：目录结构重排 —— ① 收件箱移到项目根 `inbox/<pm|dm|am>/`，不再进 `docs/`（`.gitignore` 用 `inbox/*/`）；② SPEC 由 `docs/spec/` 改为 `docs/pd/spec/`；③ ticket 由 `docs/tickets/` 改为 `docs/dev/tickets/`；④ 新增 `docs/user/user-arch/`、`docs/user/user-plan/`（均 PM 落盘），`docs/dev/arch/` 作废。

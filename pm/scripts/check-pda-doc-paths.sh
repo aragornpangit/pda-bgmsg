@@ -7,15 +7,22 @@ set -u
 
 ROOT="$(cd "${1:-$PWD}" && pwd)" || exit 2
 SKILLS_DIR="${PDA_SKILLS_DIR:-$ROOT/.agents/skills}"
-# 解析脚本真实位置，兼容“脚本被软链到项目里”的安装方式
-CONTRACT="$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)/team.md"
+# 契约定位：优先项目内的 docs/team.md，回退到脚本真实位置的上一级（脚本与本仓 team.md 同级时）
+if [ -f "$ROOT/docs/team.md" ]; then
+  CONTRACT="$ROOT/docs/team.md"
+else
+  CONTRACT="$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)/team.md"
+fi
+
+# 六个产物目录（docs 下）+ 收件箱根（项目根下，不在 docs/ 内）
+DOC_DIRS="docs/pd/prd docs/pd/spec docs/dev/tickets docs/research docs/user/user-arch docs/user/user-plan"
 
 fail=0
 echo "项目根：  $ROOT"
 echo "技能目录：$SKILLS_DIR"
 echo
-echo "== 1) 五个产物目录必须存在 =="
-for d in docs/pd/prd docs/spec docs/research docs/tickets docs/dev/arch; do
+echo "== 1) 六个产物目录与根目录 inbox/ 必须存在 =="
+for d in $DOC_DIRS; do
   if [ -d "$ROOT/$d" ]; then
     echo "OK   目录存在            $d"
   else
@@ -23,6 +30,12 @@ for d in docs/pd/prd docs/spec docs/research docs/tickets docs/dev/arch; do
     fail=1
   fi
 done
+if [ -d "$ROOT/inbox" ]; then
+  echo "OK   目录存在            inbox/（项目根，不在 docs/ 下）"
+else
+  echo "FAIL 目录缺失            inbox/（项目根，不在 docs/ 下）"
+  fail=1
+fi
 
 echo
 echo "== 2) 三个角色技能必须指向各自唯一目录 =="
@@ -42,14 +55,15 @@ check() {
   fi
 }
 check "$SKILLS_DIR/pm/SKILL.md" 'docs/pd/prd/'
-check "$SKILLS_DIR/pm/SKILL.md" 'docs/spec/'
-check "$SKILLS_DIR/dm/SKILL.md" 'docs/tickets/'
+check "$SKILLS_DIR/pm/SKILL.md" 'docs/pd/spec/'
+check "$SKILLS_DIR/pm/SKILL.md" 'docs/user/user-arch/'
+check "$SKILLS_DIR/dm/SKILL.md" 'docs/dev/tickets/'
 check "$SKILLS_DIR/am/SKILL.md" 'docs/research/'
 
 echo
-echo "== 3) 团队契约必须登记五个唯一目录 =="
+echo "== 3) 团队契约必须登记六个唯一目录与收件箱根 =="
 if [ -f "$CONTRACT" ]; then
-  for d in 'docs/pd/prd/' 'docs/spec/' 'docs/tickets/' 'docs/research/' 'docs/dev/arch/'; do
+  for d in 'docs/pd/prd/' 'docs/pd/spec/' 'docs/dev/tickets/' 'docs/research/' 'docs/user/user-arch/' 'docs/user/user-plan/' 'inbox/'; do
     if grep -q -- "$d" "$CONTRACT"; then
       echo "OK   契约含              $d"
     else
