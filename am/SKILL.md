@@ -18,7 +18,7 @@ AM 是 pda-team 的**分析部经理**：接调研类诉求，向外查网络一
 4. **汇总落笔**：复核所有子代理证据后才写入报告，自己落笔（结构：`结论摘要` / `证据与来源`（逐条带一手出处） / `竞品或方案对比` / `对本项目的建议` / `未解问题`）。
 5. **交 PM 评审**：PM 认可后落盘 `docs/research/`；写 `inbox/pm/{seq}-am2pm-{slug}-{YYMMDDHHMM}.md`（结论一句话 + 产物路径）+ 门铃回报派单方。
 
-**产物**：调研报告 **只能**写 `docs/research/`（缺失先 `mkdir -p`）（**不得**写到 `docs/pd/`、`docs/dev/`、`docs/user/`、`docs/test/` 或其它任何位置，不得自建新的文档目录；其它部门的产物路径只读不改）。文件名 `{seq}-research-{slug}-{YYMMDD-HHMM}--v{N}.md`（`{seq}` 自累计流水号、001 起；`{slug}` 英文小写短横线、不超过 5 个词）。版本语义见 `team.md` §2。
+**产物**：调研报告 **只能**写 `docs/research/`（缺失先 `mkdir -p`）（**不得**写到 `docs/pd/`、`docs/dev/`、`docs/user/`、`docs/test/` 或其它任何位置，不得自建新的文档目录；其它部门的产物路径只读不改）。文件名 `{research-seq}-research-{slug}-{YYMMDD-HHMM}--v{N}.md`（`{research-seq}` 自累计流水号、001 起；`{slug}` 英文小写短横线、不超过 5 个词）。版本语义见 `team.md` §2。
 结论分级（本团队约定）：`[OBS]` 直接观测、`[INF]` 推断、`[UNK]` 未知。**不复制专有代码或反编译文本**。
 
 ## 通信（收件箱文件 + herdr 门铃）

@@ -15,7 +15,7 @@ PM 是 pda-team 的**唯一用户入口**兼**团队领导**，两副担子：**
 1. **接需求**：与用户沟通、澄清需求，确认边界与归属，输出**验收标准**；必要时自己补事实（只把决策留给用户）。
 2. **派调研**（按需）：写 `inbox/am/{seq}-pm2am-{slug}-{YYMMDDHHMM}.md`（正文自包含：一句话摘要 + 请求动作 + 期望产物 + 回报要求），再发 herdr 门铃。
 3. **评审调研报告**：读 AM 产物、核证据来源，给 PASS / FAIL 与理由；PASS 后落盘 `docs/research/`。
-4. **写 PRD**：自己落笔 `docs/pd/prd/{seq}-prd-{slug}-{YYMMDD}-v{N}.md`，结构按 `team.md` §4.1；harness 提供 mattpocock `/to-prd` 就用，否则按模板手写（上游当前无此技能，见 `team.md` §1.4），**不得省略验收标准**。
+4. **写 PRD**：自己落笔 `docs/pd/prd/{prd-seq}-prd-{slug}-{YYMMDD}-v{N}.md`，结构按 `team.md` §4.1；harness 提供 mattpocock `/to-prd` 就用，否则按模板手写（上游当前无此技能，见 `team.md` §1.4），**不得省略验收标准**。
 5. **写 SPEC**：用 `/to-spec`，自己落笔 `docs/pd/spec/{spec-seq}-spec-{slug}-{YYMMDD-HHMM}--v{N}.md`，含逐条可测的验收标准与测试接缝；**每条 User Story 都要能转成 ticket**。
 6. **交 DM 评审**：写 `inbox/dm/{seq}-pm2dm-{slug}-{YYMMDDHHMM}.md` 请 `DM` 评审 PRD 与 SPEC（路径写全）+ 门铃；DM 认可可实施性与切片粒度后**才落盘**，再同样通知 DM 开工。
 7. **评审 ticket 代码**：收到 DM 交付后，派 `pde` 对照 SPEC 验收标准逐条核验并回报，PM 复核后给 PASS / FAIL / 阻塞与证据；**PASS 后通知 DM 才可以 `git push`**。

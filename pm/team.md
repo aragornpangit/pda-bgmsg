@@ -104,16 +104,16 @@ git clone https://github.com/mattpocock/skills.git
 
 ## 2. 文件命名规范（权威）
 
-`{seq}` 序号，`{slug}` 简短语义（英文小写短横线，不超过 5 个词），`{YYMMDD-HHMM}` 年月日与时刻，`v{N}` 同一文件原地升级的版本号。
+序号按产物类别各自独立、类别内自累计（001 起）：`{prd-seq}`（PRD）、`{research-seq}`（调研报告）、`{user-arch-seq}`（用户架构）、`{user-plan-seq}`（用户计划）、`{spec-seq}`（SPEC 与 ticket 共用）；收件箱消息另用 `{seq}` 消息流水号。`{slug}` 简短语义（英文小写短横线，不超过 5 个词），`{YYMMDD-HHMM}` 年月日与时刻，`v{N}` 同一文件原地升级的版本号。
 
 | 产物 | 目录 | 文件名 |
 |---|---|---|
-| 调研报告 | `docs/research/` | `{seq}-research-{slug}-{YYMMDD-HHMM}--v{N}.md` |
-| 产品需求文档 PRD | `docs/pd/prd/` | `{seq}-prd-{slug}-{YYMMDD}-v{N}.md` |
+| 调研报告 | `docs/research/` | `{research-seq}-research-{slug}-{YYMMDD-HHMM}--v{N}.md` |
+| 产品需求文档 PRD | `docs/pd/prd/` | `{prd-seq}-prd-{slug}-{YYMMDD}-v{N}.md` |
 | 规格书 SPEC | `docs/pd/spec/` | `{spec-seq}-spec-{slug}-{YYMMDD-HHMM}--v{N}.md` |
 | 开发工单 ticket | `docs/dev/tickets/` | `{spec-seq}-ticket-{slug}-{YYMMDD-HHMM}--v{N}.md` |
-| 用户架构 | `docs/user/user-arch/` | `{seq}-arch-{slug}-{YYMMDD-HHMM}--v{N}.md` |
-| 用户计划 | `docs/user/user-plan/` | `{seq}-plan-{slug}-{YYMMDD-HHMM}--v{N}.md` |
+| 用户架构 | `docs/user/user-arch/` | `{user-arch-seq}-arch-{slug}-{YYMMDD-HHMM}--v{N}.md` |
+| 用户计划 | `docs/user/user-plan/` | `{user-plan-seq}-plan-{slug}-{YYMMDD-HHMM}--v{N}.md` |
 | 收件箱消息 | `inbox/<收件角色>/` | `{seq}-{方向}-{slug}-{YYMMDDHHMM}.md`（无版本号，读毕即删） |
 
 规则：
@@ -121,7 +121,7 @@ git clone https://github.com/mattpocock/skills.git
 1. **spec 与 ticket 必须对齐 `spec-seq`**：同一需求的 SPEC 与其 ticket 用同一个 `spec-seq` 前缀。
 2. **版本语义**：版本内小步更新**就地改同一文件**；实质修订**另立新版本号文件**（新时间戳、`v{N+1}`），并在旧文件头部就地标注「已被 v N+1 取代」。
 3. PRD 按需求方给定的格式只有日期（`YYMMDD`），无时刻；其余产物一律带时刻。
-4. **独立编号**：PRD、用户架构、用户计划的 `{seq}` 与 SPEC 的 `{spec-seq}` 相互独立；只有 SPEC 与 ticket 必须共用同一个 `spec-seq`。
+4. **独立编号**：`{prd-seq}` / `{research-seq}` / `{user-arch-seq}` / `{user-plan-seq}` / `{spec-seq}` 各自独立、类别内自累计；只有 SPEC 与 ticket 必须共用同一个 `spec-seq`。
 5. 历史笔误留痕：需求原文的 `ver{seq}`、`YYMMDD-v{seq}` 写法**已作废**，一律以本表为准，历史文件不改名。
 
 ## 3. 目录职责
@@ -130,7 +130,7 @@ git clone https://github.com/mattpocock/skills.git
 
 | 唯一目录 | 负责人 | 产物 | 对齐要求 |
 |---|---|---|---|
-| `docs/pd/prd/` | PM | 产品需求文档（PRD） | `{seq}` 与 SPEC 独立编号 |
+| `docs/pd/prd/` | PM | 产品需求文档（PRD） | `{prd-seq}` 独立编号 |
 | `docs/pd/spec/` | PM | 产品规格书（SPEC，含验收标准） | 与 ticket 共用 `spec-seq` |
 | `docs/dev/tickets/` | DM（`sde` 更新证据） | 开发工单（ticket） | 与 SPEC 共用 `spec-seq` |
 | `docs/research/` | AM | 市场调研与竞品逆向报告 | 无 |
@@ -204,3 +204,4 @@ bash pm/scripts/check-pda-doc-paths.sh
 
 - **2026-10-21（用户裁定）**：① PRD 类别**复活**，落盘路径由 `docs/prd/` 改为 `docs/pd/prd/`（`docs/prd/` 作废）；② 新增 `docs/dev/arch/`——**软件设计架构**落点，DM 落盘、PM 评审，命名 `{seq}-arch-{slug}-{YYMMDD-HHMM}--v{N}.md`。
 - **2026-10-21（用户裁定·第二次）**：目录结构重排 —— ① 收件箱移到项目根 `inbox/<pm|dm|am>/`，不再进 `docs/`（`.gitignore` 用 `inbox/*/`）；② SPEC 由 `docs/spec/` 改为 `docs/pd/spec/`；③ ticket 由 `docs/tickets/` 改为 `docs/dev/tickets/`；④ 新增 `docs/user/user-arch/`、`docs/user/user-plan/`（均 PM 落盘），`docs/dev/arch/` 作废。
+- **2026-10-21（用户裁定·第三次）**：序号按产物类别拆分 —— PRD `{prd-seq}`、调研报告 `{research-seq}`、用户架构 `{user-arch-seq}`、用户计划 `{user-plan-seq}`，各自独立、类别内自累计；SPEC 与 ticket 仍共用 `{spec-seq}`；收件箱消息保留 `{seq}` 消息流水号。
