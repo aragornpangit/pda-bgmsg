@@ -38,7 +38,7 @@ else
 fi
 
 echo
-echo "== 2) 五个角色技能必须指向各自唯一目录 =="
+echo "== 2) 三个角色技能必须指向各自唯一目录 =="
 check() {
   local file="$1" want="$2" who
   who="$(basename "$(dirname "$file")")"
@@ -59,8 +59,6 @@ check "$SKILLS_DIR/pda-pm/SKILL.md" 'docs/pd/spec/'
 check "$SKILLS_DIR/pda-pm/SKILL.md" 'docs/user/user-arch/'
 check "$SKILLS_DIR/pda-dm/SKILL.md" 'docs/dev/tickets/'
 check "$SKILLS_DIR/pda-am/SKILL.md" 'docs/research/'
-check "$SKILLS_DIR/pda-dl/SKILL.md" 'docs/dev/tickets/'
-check "$SKILLS_DIR/pda-al/SKILL.md" 'docs/research/'
 
 echo
 echo "== 3) 团队契约必须登记六个唯一目录与收件箱根 =="

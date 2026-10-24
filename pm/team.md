@@ -1,11 +1,11 @@
 # pda-fleet 团队契约
 
-> 本文件是 **pda-fleet 的唯一团队定义**：组织、成员、通信、文件命名、工作流程、目录职责与纪律；五个角色技能 `pda-pm` / `pda-dm` / `pda-am` / `pda-dl{n}` / `pda-al{n}` 只做落地说明，**冲突时以本文件为准**。
+> 本文件是 **pda-fleet 的唯一团队定义**：组织、成员、通信、文件命名、工作流程、目录职责与纪律；三个角色技能 `pda-pm` / `pda-dm` / `pda-am` 只做落地说明，**冲突时以本文件为准**。
 > 团队成员运行在终端多智能体复用器 Herdr 中；会话与 pane 随重启变化，本文件不登记 pane id。
 
 ## 0. 仓库结构
 
-本仓根目录按角色分文件夹，一个角色一个目录；团队契约、仓库说明与机检脚本随团队领导放在 `pm/` 内，不散落根目录：
+本仓根目录按角色分文件夹，一个角色一个目录；团队契约、仓库说明与机检脚本随产品总放在 `pm/` 内，不散落根目录：
 
 ```
 pda-fleet/
@@ -15,9 +15,7 @@ pda-fleet/
 │   ├── README.md                         # 仓库说明与安装
 │   └── scripts/check-pda-doc-paths.sh    # 产物落盘路径机检
 ├── dm/SKILL.md                           # 开发经理（pda-dm）
-├── am/SKILL.md                           # 分析经理（pda-am）
-├── dl/SKILL.md                           # 开发组长（pda-dl{n}）
-└── al/SKILL.md                           # 分析组长（pda-al{n}）
+└── am/SKILL.md                           # 分析经理（pda-am）
 ```
 
 ## 1. 团队定义
@@ -27,40 +25,31 @@ pda-fleet/
 ```
 pda-pm                 产品总（label PM）
 ├── pda-dm               开发经理（label DM）
-│   ├── pda-dl1          开发组长（label pda-dl1）
-│   │   ├── pda-de       开发工程师（子代理，不占 tab）
-│   │   └── pda-de ...
-│   ├── pda-dl2 ...
-│   └── pda-dl{n}
+│   └── pda-de           开发工程师（子代理，不占 tab，可并行 n 个）
 └── pda-am               分析经理（label AM）
-    ├── pda-al1          分析组长（label pda-al1）
-    │   ├── pda-ae       分析工程师（子代理，不占 tab）
-    │   └── pda-ae ...
-    └── pda-al{n}
+    └── pda-ae           分析工程师（子代理，不占 tab，可并行 n 个）
 ```
 
 | 角色 | 全称 | 技能 / 实例名 | tab label | 直属上级 | 直属下级 | 职责 |
 |---|---|---|---|---|---|---|
 | 产品总 | ProductChief | `pda-pm` | `PM` | 用户 | `pda-dm`、`pda-am` | 唯一用户入口；接需求、出验收标准、落笔 PRD 与 SPEC、评审调研报告与 ticket 代码、跨部门裁决 |
-| 开发经理 | DevelopManager | `pda-dm` | `DM` | `pda-pm` | `pda-dl{n}` | 由 SPEC 拆 ticket、按需生成开发组长、验收整合、PM 评审通过后 push |
-| 分析经理 | AnalystManager | `pda-am` | `AM` | `pda-pm` | `pda-al{n}` | 接调研诉求、按需生成分析组长、收口调研报告 |
-| 开发组长 | DevelopLeader | `pda-dl{n}` | `pda-dl{n}` | `pda-dm` | `pda-de`（子代理） | 建 worktree、派开发工程师、收 diff 做实施层初检、回报 DM |
-| 分析组长 | AnalystLeader | `pda-al{n}` | `pda-al{n}` | `pda-am` | `pda-ae`（子代理） | 拆子问题、派分析工程师并行取证、复核一手出处、汇总回报 AM |
+| 开发经理 | DevelopManager | `pda-dm` | `DM` | `pda-pm` | `pda-de`（子代理） | 由 SPEC 拆 ticket、直接派开发工程师实施、验收整合、PM 评审通过后 push |
+| 分析经理 | AnalystManager | `pda-am` | `AM` | `pda-pm` | `pda-ae`（子代理） | 接调研诉求、拆子问题、直接派分析工程师并行取证、收口调研报告 |
 
 **单线指挥（硬约束，任何角色不得越级或横向直连）：**
 
-1. `pda-pm` **只**直接指挥 `pda-dm` 与 `pda-am`；**不得**越级给 `pda-dl{n}` / `pda-al{n}` / 工程师派活或收活。
-2. `pda-dm` **只**直接指挥 `pda-dl{n}`；**不得**直接给 `pda-de` 派活，也不得直接收 de 的回报。
-3. `pda-am` **只**直接指挥 `pda-al{n}`；**不得**直接给 `pda-ae` 派活，也不得直接收 ae 的回报。
-4. 组长**只**向本部门经理汇报；`pda-dl{n}` 与 `pda-al{n}` 之间、DM 与 AM 之间**均不直连**，跨部门事项经 `pda-pm` 转派。
-5. 工程师`pda-de` / `pda-ae` **只**向派生他的组长汇报，**不装独立技能**、**不走跨 tab 通信**（纪律内嵌在组长的派发 prompt 中）。
+1. `pda-pm` **只**直接指挥 `pda-dm` 与 `pda-am`；**不得**越级给工程师派活或收活。
+2. `pda-dm` **只**直接指挥 `pda-de`（子代理，用 dynamic workflow 或 subagents 派发）；**不得**绕过 PM 横向联系 AM。
+3. `pda-am` **只**直接指挥 `pda-ae`（子代理，用 dynamic workflow 或 subagents 派发）；**不得**绕过 PM 横向联系 DM。
+4. DM 与 AM 之间**不直连**，跨部门事项经 `pda-pm` 转派。
+5. 工程师 `pda-de` / `pda-ae` **只**向派生他的经理汇报，**不装独立技能**、**不走跨 tab 通信**（纪律内嵌在经理的派发 prompt 中）。
 
 ### 1.2 运行环境与 tab 生命周期
 
-- 所有角色运行在 **Herdr**（终端多智能体复用器）中，各自占一个 tab。
+- 三个角色运行在 **Herdr**（终端多智能体复用器）中，各占一个 tab；工程师是经理会话内的子代理，**不占 tab**。
 - 识别伙伴**一律按 tab label**（`herdr tab list`），**不按 pane id 记忆**：pane id 会随重启/移动变化。
 - 团队启动顺序：先用用户会话（或 PM 会话外部）备好 `PM` tab；**PM 负责创建 `DM`、`AM` 两个 tab**，并请用户在各 tab 内启动自己的 harness。
-- **组长按需生成，不预建**：`DM` 用 `pda-dl{n}`、`AM` 用 `pda-al{n}` 现场建 tab，编号自 1 单调递增、**已关闭编号不复用**。
+- **团队只有三个 tab**：`PM` / `DM` / `AM`。工程师是经理会话内的子代理，**不建 tab、不占 pane**。
 
 ```bash
 # 1) 查 label（按 label 文字匹配，不抄历史 id）
@@ -71,14 +60,11 @@ HERDR_ENV=1 herdr pane list --workspace "$HERDR_WORKSPACE_ID"
 
 若目标 label 不存在：**停下问用户**，不要猜测 pane id、不要对不存在的会话反复重试。
 
-创建 tab（PM 建部门经理；部门经理建组长）：
+创建 tab（PM 建两个部门经理；部门经理不建 tab）：
 
 ```bash
 # <ROLE> 取 DM / AM；PM 自己的 tab 由用户创建，不在 PM 会话内自建
 HERDR_ENV=1 herdr tab create --workspace "$HERDR_WORKSPACE_ID" --cwd "$PWD" --label <ROLE>
-
-# 组长：DM 建 pda-dl{n}，AM 建 pda-al{n}（n 从 1 递增）
-HERDR_ENV=1 herdr tab create --workspace "$HERDR_WORKSPACE_ID" --cwd "$PWD" --label pda-dl1
 ```
 
 建完 tab 后，创建者必须让新 tab 进入角色：harness 未自动启动时**请用户启动**；启动后由创建者把首条任务（角色名、技能名、直属上级 label、任务文件路径）投递到该 tab，并核验已送达。
@@ -93,18 +79,16 @@ HERDR_ENV=1 herdr tab create --workspace "$HERDR_WORKSPACE_ID" --cwd "$PWD" --la
 |---|---|---|
 | `pda-pm` | `pda-dm` / `pda-am` | `pm2dm` / `pm2am` |
 | `pda-dm` / `pda-am` | `pda-pm` | `dm2pm` / `am2pm` |
-| `pda-dm` | `pda-dl{n}` | `dm2dl{n}` |
-| `pda-dl{n}` | `pda-dm` | `dl{n}2dm` |
-| `pda-am` | `pda-al{n}` | `am2al{n}` |
-| `pda-al{n}` | `pda-am` | `al{n}2am` |
+
+工程师是子代理，**不走收件箱、不发门铃**：经理派发即 prompt 直传，回报即子代理结果。
 
 **第一步 定位伙伴**（每次重跑，禁止复用上一次的 pane id）：`herdr tab list` 按 label 找到 `tab_id` → `herdr pane list` 按该 `tab_id` 取**当前** pane id。label 不在列表里 ⇒ **停下问用户**，不猜 pane id。
 
 **第二步 写收件箱文件**
 
-- 路径：**项目根目录**下的 `inbox/<收件角色>/{seq}-{方向}-{slug}-{YYMMDDHHMM}.md`（`<收件角色>` ∈ `pm` / `dm` / `am` / `dl{n}` / `al{n}`；**不在 `docs/` 下**；目录不存在先 `mkdir -p`）
+- 路径：**项目根目录**下的 `inbox/<收件角色>/{seq}-{方向}-{slug}-{YYMMDDHHMM}.md`（`<收件角色>` ∈ `pm` / `dm` / `am`；**不在 `docs/` 下**；目录不存在先 `mkdir -p`）
 - `{seq}`：自累计流水号，001 起，一条消息一个号（与 SPEC 的 `spec-seq` 无关）
-- `{方向}`：见上表；跨部门事项由 PM 转派，不出现 `dm2am` / `dl2al` 之类
+- `{方向}`：见上表；跨部门事项由 PM 转派，不出现 `dm2am` 之类
 - `{slug}`：英文小写短横线，不超过 5 个词
 - `{YYMMDDHHMM}`：落盘时刻，两位年 + 月 + 日 + 时 + 分，无分隔符（例 `2610201430`）
 - 正文**自包含**：一句话摘要 / 权威文档路径 / 请求动作 / 期望产物 / 回报要求
@@ -164,8 +148,7 @@ git clone https://github.com/mattpocock/skills.git
 2. **版本语义**：版本内小步更新**就地改同一文件**；实质修订**另立新版本号文件**（新时间戳、`v{N+1}`），并在旧文件头部就地标注「已被 v N+1 取代」。
 3. PRD 按需求方给定的格式只有日期（`YYMMDD`），无时刻；其余产物一律带时刻。
 4. **独立编号**：`{prd-seq}` / `{research-seq}` / `{user-arch-seq}` / `{user-plan-seq}` / `{spec-seq}` 各自独立、类别内自累计；只有 SPEC 与 ticket 必须共用同一个 `spec-seq`。
-5. **组长编号**：`pda-dl{n}` / `pda-al{n}` 的 `{n}` 与 tab label、收件箱目录（`inbox/dl{n}`、`inbox/al{n}`）**三处同名**，自 1 递增，已关闭编号不复用。
-6. 历史笔误留痕：需求原文的 `ver{seq}`、`YYMMDD-v{seq}` 写法**已作废**，一律以本表为准，历史文件不改名。
+5. 历史笔误留痕：需求原文的 `ver{seq}`、`YYMMDD-v{seq}` 写法**已作废**，一律以本表为准，历史文件不改名。
 
 ## 3. 目录职责
 
@@ -175,7 +158,7 @@ git clone https://github.com/mattpocock/skills.git
 |---|---|---|---|
 | `docs/pd/prd/` | PM | 产品需求文档（PRD） | `{prd-seq}` 独立编号 |
 | `docs/pd/spec/` | PM | 产品规格书（SPEC，含验收标准） | 与 ticket 共用 `spec-seq` |
-| `docs/dev/tickets/` | DM（`pda-de` 证据经组长回报、由 DM 归档） | 开发工单（ticket） | 与 SPEC 共用 `spec-seq` |
+| `docs/dev/tickets/` | DM（`pda-de` 证据由 DM 归档） | 开发工单（ticket） | 与 SPEC 共用 `spec-seq` |
 | `docs/research/` | AM | 市场调研与竞品逆向报告 | 无 |
 | `docs/user/user-arch/` | PM | 用户架构文档 | 无 |
 | `docs/user/user-plan/` | PM | 用户计划文档 | 无 |
@@ -185,10 +168,10 @@ git clone https://github.com/mattpocock/skills.git
 
 1. 上述路径是**唯一允许位置**，不得写到 `docs/pd/`（除 `prd/`、`spec/`）、`docs/dev/`（除 `tickets/`）、`docs/user/`（除 `user-arch/`、`user-plan/`）、`docs/test/` 或其它任何位置；收件箱只在项目根 `inbox/` 下，不进 `docs/`；不得自建新的文档目录。
 2. 各部门的产物目录**互不越界**：只读引用可以，移动/改名不可以。
-3. **组长不写 `docs/`**：`pda-dl{n}` / `pda-al{n}` 的回报与证据只落 `inbox/<上级>/`（或由上级并入票面/报告），`docs/` 内的产物一律由经理落笔。
+3. **工程师不写 `docs/`**：`pda-de` / `pda-ae` 的证据只回给派发他的经理（由经理并入票面/报告），`docs/` 内的产物一律由经理落笔。
 4. 旧体系（`docs/pd/` 除 `prd/`、`spec/` 外，`docs/dev/` 除 `tickets/` 外，`docs/test/`）只保留历史，**不再接收新产物**；历史文件不改名、不搬迁（历史事实留痕）。**现行口径（2026-10-21 用户裁定·第二次修订）**：① PRD 落 `docs/pd/prd/`；② SPEC 由 `docs/spec/` 改为 `docs/pd/spec/`；③ ticket 由 `docs/tickets/` 改为 `docs/dev/tickets/`；④ 新增 `docs/user/user-arch/`（用户架构）与 `docs/user/user-plan/`（用户计划），均由 PM 落盘；⑤ `docs/dev/arch/` **作废**，不再单独设架构目录；⑥ 收件箱由 `docs/<角色>/inbox/` 移到项目根 `inbox/<角色>/`。
 5. **目录初始化由 PM 负责**：PM 接手一个项目时先检查再补齐（见 §3.1），产物目录不由 AM / DM 自建。
-6. 机检口径：§7 的脚本只校验「六个产物目录与根 `inbox/` 存在、五个技能各自指向自己的目录、契约登记齐全、负样本被拒绝」；它**不校验单个文件的落盘路径**，新产物靠本表与评审把关。
+6. 机检口径：§7 的脚本只校验「六个产物目录与根 `inbox/` 存在、三个技能各自指向自己的目录、契约登记齐全、负样本被拒绝」；它**不校验单个文件的落盘路径**，新产物靠本表与评审把关。
 
 ### 3.1 初始化（PM 负责，幂等）
 
@@ -203,18 +186,18 @@ bash pm/scripts/check-pda-doc-paths.sh .
 
 - **完成判据**：机检输出 `ALL_PASS`。缺目录时脚本报 `FAIL 目录缺失`，PM 补齐后重跑。
 - **只建目录、不建产物**：空目录不预置占位文件，避免被误认为已有交付物。
-- **AM / DM 不自建产物目录**：发现自己的目标目录缺失，回报 PM（收件箱目录属运行时通道，可按需 `mkdir -p` 兜底；`inbox/dl{n}`、`inbox/al{n}` 由发送方按需建）。
+- **AM / DM 不自建产物目录**：发现自己的目标目录缺失，回报 PM（收件箱目录属运行时通道，可按需 `mkdir -p` 兜底）。
 - 契约文件 `docs/team.md` 与技能安装不在本步骤内（安装见 `README.md`）。
 
 ## 4. 工作流程
 
-1. **AM 调研**：AM 按需生成 `pda-al{n}`，由组长派 `pda-ae` 取证；AM 复核并收口成调研报告，**经 PM 评审后落盘** `docs/research/`。
+1. **AM 调研**：AM 把诉求拆成互不依赖的子问题，**直接派 `pda-ae` 并行取证**（dynamic workflow 或 subagents）；AM 复核一手出处并收口成调研报告，**经 PM 评审后落盘** `docs/research/`。
 2. **PM 出 PRD 与 SPEC**：PM 基于调研报告与用户交流，输出 PRD 与 SPEC（含验收标准），**经 DM 评审后落盘** `docs/pd/prd/`、`docs/pd/spec/`。
 3. **DM 拆 ticket**：DM 基于 SPEC，用 `/to-tickets` 拆成与 SPEC 对应的开发工单，落盘 `docs/dev/tickets/`；DM 负责汇总、评审、整合本部门结果。
-4. **DM 生成开发组长并派票**：DM 按批次建 `pda-dl{n}`，把票面（路径、票基、Files 边界、验收判据、`timeoutMs`、回报格式）交给组长；组长建 worktree、派 `pda-de` 实施并做实施层初检，回报 DM。
-5. **DM 验收整合**：核 diff 与初检读数 → 构建与测试 → 合并（冲突逐 hunk 按意图消解）→ 不合格打回原组长 → 逐票更新状态。
+4. **DM 派工程师**：DM 按依赖图分批，**直接派 `pda-de`**（一个 ticket 一个子代理、一个 git worktree）；派单 prompt 必带票面路径、票基（显式 sha）、Files 边界、验收判据、期望产物、回报格式、`timeoutMs`。
+5. **DM 验收整合**：收子代理结果 → 核 diff 与逐条判据读数 → 主干构建与全量测试 → 合并（冲突逐 hunk 按意图消解）→ 不合格打回原 `pda-de` → 收回 `git worktree remove` → 逐票更新状态。
 6. **交付 PM 评审**：DM 把代码提交给 PM **部门**评审；一个 ticket 对应一个 SPEC。链路：PM 亲自对照 SPEC 验收标准核验 → PM 给结论 → **PM 通知 DM** → DM 才执行 `git push`。
-7. **并行**：对无依赖关系的任务，各角色**只在直属下级之间并行**（PM 在 DM/AM 之间；DM 在多个 `pda-dl{n}` 之间；AM 在多个 `pda-al{n}` 之间；组长在多个工程师之间），优先级：dynamic workflow > 多个 subagents 并行；**不得为省事而串行，也不得越级派发**。
+7. **并行**：对无依赖关系的任务，PM 在 DM / AM 之间并行；DM 在多个 `pda-de` 之间并行；AM 在多个 `pda-ae` 之间并行。优先级：dynamic workflow > 多个 subagents 并行；**不得为省事而串行，也不得越级派发**。
 
 ### 4.1 PRD 模板（PM）
 
@@ -239,7 +222,7 @@ SPEC 必须自包含：每条 User Story 都能转成 ticket 与用例。
 2. 每份派发 prompt 必须显式写清：输入（产物路径）、边界、期望产物、回报要求、`timeoutMs`（长链路不短于 45 min）。
 3. 子代理一律后台/异步派发，**派完立即结束本轮**，由完成通知唤醒再验收；不做轮询。
 4. 开发工程师**每人一个 git worktree**，只在 worktree 内编辑与提交；主工作树只读。
-5. 所有子代理结果由**派生他的那一级**复核证据后，才能写入权威文档或进入下一步；经理不直接采信工程师的原始回报。
+5. 所有子代理结果由**派发他的经理**复核证据后，才能写入权威文档或进入下一步；不得直接采信子代理的自述结论。
 
 ### 5.3 评审门禁
 
@@ -247,7 +230,6 @@ SPEC 必须自包含：每条 User Story 都能转成 ticket 与用例。
 |---|---|---|---|
 | 调研报告 | AM | PM | PM 认可结论与证据来源，落盘 `docs/research/` |
 | PRD 与 SPEC | PM | DM | DM 认可可实施性与切片粒度，落盘 `docs/pd/prd/`、`docs/pd/spec/` |
-| 实施初检 | DL | DM | 票面判据逐条有读数、门红已分类、Files 边界未越界 |
 | 用户架构 / 用户计划 | PM | 用户 | 结构与真实代码一致、不混写未来态，落盘 `docs/user/user-arch/`、`docs/user/user-plan/` |
 | ticket 代码 | DM | PM | 逐条对照 SPEC 验收标准全部通过；PM 通知 DM 后方可 push |
 | 跨部门分歧 | DM / AM | PM | PM 裁决并回结论 |
@@ -262,10 +244,11 @@ SPEC 必须自包含：每条 User Story 都能转成 ticket 与用例。
 bash pm/scripts/check-pda-doc-paths.sh
 ```
 
-检查四件事：六个产物目录存在（`docs/pd/prd`、`docs/pd/spec`、`docs/dev/tickets`、`docs/research`、`docs/user/user-arch`、`docs/user/user-plan`）＋ 根目录 `inbox/` 存在、五个技能（`pda-pm` / `pda-dm` / `pda-am` / `pda-dl` / `pda-al`）各自指向自己的唯一目录、本契约登记齐全、负样本能被正确拒绝。**改路径规范后必须重跑**。
+检查四件事：六个产物目录存在（`docs/pd/prd`、`docs/pd/spec`、`docs/dev/tickets`、`docs/research`、`docs/user/user-arch`、`docs/user/user-plan`）＋ 根目录 `inbox/` 存在、三个技能（`pda-pm` / `pda-dm` / `pda-am`）各自指向自己的唯一目录、本契约登记齐全、负样本能被正确拒绝。**改路径规范后必须重跑**。
 
 ## 8. 变更记录
 
+- **2026-10-24（用户裁定·取消组长层级）**：① 撤销 `pda-dl{n}` / `pda-al{n}` 两个组长技能与对应 tab，团队只剩 **`pda-pm` / `pda-dm` / `pda-am` 三个角色**；② 两个经理**直接**用 dynamic workflow 或 subagents 派 `pda-de` / `pda-ae` 工程师干活，并亲自复核、整合、落笔；③ 收件箱只剩 `inbox/{pm,dm,am}`，方向码只剩 `pm2dm` / `pm2am` / `dm2pm` / `am2pm`，工程师不走收件箱；④ 单线指挥仍为硬约束：产品总只指挥两个经理，DM 与 AM 不直连。
 - **2026-10-24（用户裁定·改名与称号）**：① 团队名 `pda-team` 改为 **`pda-fleet`**；② 团队领导技能 `pda-leader-pm` 改回 **`pda-pm`**（技能目录名同步）；③ 三个角色起称号 —— `pda-pm`＝**产品总**、`pda-dm`＝**开发经理**、`pda-am`＝**分析经理**；④ 组长技能 `pda-dl{n}` / `pda-al{n}`、tab label（`PM` / `DM` / `AM`）、收件箱目录（`inbox/{pm,dm,am}`）与方向码不变。
 - **2026-10-22（用户裁定·组织调整）**：团队改为五级单线指挥 —— ① 产品总技能由 `pda-pm` 更名 `pda-leader-pm`（团队领导兼产品经理），直属下级只有 `pda-dm` 与 `pda-am`，原 `pde` 撤销；② `pda-dm` 下新增 n 个开发组长 `pda-dl{n}`（label 同名，由 DM 用 `herdr tab create --label` 按需生成），开发工程师更名 `pda-de` 且只归组长；③ `pda-am` 下新增 n 个分析组长 `pda-al{n}`，分析工程师更名 `pda-ae` 且只归组长；④ 任何角色只与直属上下级通信，跨部门经 PM 转派。
 - **2026-10-21（用户裁定）**：① PRD 类别**复活**，落盘路径由 `docs/prd/` 改为 `docs/pd/prd/`（`docs/prd/` 作废）；② 新增 `docs/dev/arch/`——**软件设计架构**落点，DM 落盘、PM 评审，命名 `{seq}-arch-{slug}-{YYMMDD-HHMM}--v{N}.md`。
