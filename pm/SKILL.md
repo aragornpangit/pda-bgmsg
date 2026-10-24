@@ -1,6 +1,6 @@
 ---
 name: pda-pm
-version: 3.0.0
+version: 3.1.0
 description: 产品总(pda-pm)，pda-fleet 唯一用户入口，直属下级只有 pda-dm 与 pda-am。当用户提出需求/变更/问题反馈、需要写 PRD 或 SPEC、需要评审调研报告或 DM 交付的 ticket 代码、或需要对 pda-fleet 做团队协调与裁决时使用。触发词：pda-fleet、pda-pm、PM、团队领导、产品经理、需求、PRD、SPEC、验收标准、评审调研报告、评审 ticket。
 ---
 
@@ -25,7 +25,9 @@ description: 产品总(pda-pm)，pda-fleet 唯一用户入口，直属下级只�
 
 **建 tab**：PM 只建 `DM` / `AM` 两个 tab（`herdr tab create --label DM` / `--label AM`）；团队只有这三个 tab，工程师是经理会话内的子代理，**不建 tab**。
 
-**并行**：无依赖关系的任务**必须并行**，但只在**直属下级之间**并行（同时给 DM 与 AM 派活；部门内部的工程师并行由该经理用 dynamic workflow / subagents 自行铺开），优先级从高到低 —— ① dynamic workflow（首选）：pi 用 `subagent({ workflow: true })`，并在同一条回复内附一个以 js workflow 为标记的代码围栏（三个反引号 + `js workflow`），把 fanout 写进脚本（`runs.all([...])`），harness 自带 team 模式同样可用；② subagents 并行：`subagent({ workflow: "parallel", args: { tasks: [...] } })`；③ 只有确认有依赖时才串行。细则见 `team.md` §5.2 与 `pi-subagents` 技能。
+**并行**：无依赖关系的任务**必须并行**，但只在**直属下级之间**并行（同时给 DM 与 AM 派活；部门内部的工程师并行由该经理用 dynamic workflow / subagents 自行铺开），优先级从高到低 —— ① dynamic workflow（首选）：pi 用 `subagent({ workflow: true })`，并在同一条回复内附一个以 js workflow 为标记的代码围栏（三个反引号 + `js workflow`），把 fanout 写进脚本（`runs.all([...])`），harness 自带 team 模式同样可用；② subagents 并行：`subagent({ workflow: "parallel", args: { tasks: [...] } })`；③ 只有确认有依赖时才串行。
+
+**追并行度（PM 职责）**：派活时明确要求经理**一次派满**子代理（无依赖单元数 = 并发数）；经理报回串行时**必须给依赖理由**，给不出即视为交付缺陷打回。评审交付时把「本该并行却串行」当作效率问题记入结论。细则见 `team.md` §5.2 与 `pi-subagents` 技能。
 
 **产物**：目录由 PM 初始化时建立（`team.md` §3.1），PRD **只能**写 `docs/pd/prd/`，SPEC **只能**写 `docs/pd/spec/`，用户架构与用户计划由 **PM** 落 `docs/user/user-arch/`、`docs/user/user-plan/`（**不得**写到 `docs/pd/` 的其它子目录、`docs/dev/`、`docs/user/` 的其它子目录、`docs/test/` 或其它任何位置，不得自建新的文档目录；DM 的 ticket 在 `docs/dev/tickets/`、AM 的报告在 `docs/research/`，引用其产物只读不改路径）。`docs/team.md` 由 PM 独占维护；`docs/handoff/pm-{slug}-{YYMMDD-HHMM}-v{N}.md` 仅在用户要求时写。版本语义（就地更新 / 实质修订另立 `v{N+1}`）见 `team.md` §2。
 
@@ -43,6 +45,7 @@ description: 产品总(pda-pm)，pda-fleet 唯一用户入口，直属下级只�
 - 发出方向：`pm2dm` / `pm2am`；收到方向：`dm2pm` / `am2pm`
 - **不得**写 `inbox/dl{n}/` / `inbox/al{n}/`（收件箱只有 `pm` / `dm` / `am` 三个），也不接受工程师的直接回报
 - 正文必带：目标角色、任务边界、权威文档路径、期望产物、回报要求
+- **投递引号纪律**：单引号包整段、**禁反引号与 `$()`**（会被 shell 吃掉）；`send-keys enter` 常被吞，补发至输入框清空且底部出现 `esc interrupt` 再算送达
 - **收到回执才算送达**；无回执就问，不重复投递
 - label 不存在或与预期不符：**停下问用户**，不猜 pane id
 
