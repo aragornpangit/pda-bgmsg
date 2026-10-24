@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # pda-fleet 产物落盘路径机检（检查「使用本团队的项目」）
 # 判据来源：本仓 team.md §3「落盘唯一位置（硬约束）」
-# 用法：bash pm/scripts/check-pda-doc-paths.sh [项目根目录]    默认当前目录
+# 用法：bash scripts/check-pda-doc-paths.sh [项目根目录]    默认当前目录（本仓内脚本在 pm/scripts/）
 #     环境变量 PDA_SKILLS_DIR 可覆盖技能安装位置（默认 <项目根>/.agents/skills）
 set -u
 

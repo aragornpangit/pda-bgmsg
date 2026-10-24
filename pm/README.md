@@ -59,8 +59,8 @@ ln -s ../../pda-fleet/pm/scripts/check-pda-doc-paths.sh <项目>/scripts/check-p
 ## 机检
 
 ```bash
-bash pm/scripts/check-pda-doc-paths.sh <项目根目录>   # 省略参数则检查当前目录
-# 技能未装在 <项目根>/.agents/skills 时，用 PDA_SKILLS_DIR 覆盖（默认值见脚本第 9 行）
+bash scripts/check-pda-doc-paths.sh <项目根目录>   # 本仓内为 pm/scripts/…；省略参数则检查当前目录
+# 技能未装在 <项目根>/.agents/skills 时，用 PDA_SKILLS_DIR 覆盖（默认值见脚本顶部 SKILLS_DIR）
 ```
 
 判据四项：六个产物目录 + 根目录 `inbox/` 存在（**缺则由 PM 初始化时补齐**，见 `team.md` §3.1）、三个角色技能各自指向自己的唯一目录、本契约登记齐全、负样本能被正确拒绝。**改路径规范后必须重跑。**

@@ -13,7 +13,7 @@ description: 产品总(pda-pm)，pda-fleet 唯一用户入口，直属下级只�
 
 ## 工作流
 
-0. **初始化目录**（接手项目第一件事，幂等）：`mkdir -p docs/{pd/{prd,spec},dev/tickets,research,user/{user-arch,user-plan}} inbox/{pm,dm,am}`，确认 `.gitignore` 含 `inbox/*/`，再跑 `bash pm/scripts/check-pda-doc-paths.sh <项目根>` 直到 `ALL_PASS`；缺目录**由 PM 补齐**，AM / DM 不自建产物目录（详见 `team.md` §3.1）。
+0. **初始化目录**（接手项目第一件事，幂等）：`mkdir -p docs/{pd/{prd,spec},dev/tickets,research,user/{user-arch,user-plan}} inbox/{pm,dm,am}`，确认 `.gitignore` 含 `inbox/*/`，再跑 `bash scripts/check-pda-doc-paths.sh <项目根>`（本仓内为 `pm/scripts/…`）直到 `ALL_PASS`；缺目录**由 PM 补齐**，AM / DM 不自建产物目录（详见 `team.md` §3.1）。
 1. **接需求**：与用户沟通、澄清需求，确认边界与归属，输出**验收标准**；必要时自己补事实（只把决策留给用户）。
 2. **派调研**（按需）：写 `inbox/am/{seq}-pm2am-{slug}-{YYMMDDHHMM}.md`（正文自包含：一句话摘要 + 请求动作 + 期望产物 + 回报要求），再发 herdr 门铃给 `AM`。**只派给 AM**，不直接找分析工程师。
 3. **评审调研报告**：读 AM 产物、核证据来源，给 PASS / FAIL 与理由；PASS 后落盘 `docs/research/`。
@@ -43,7 +43,7 @@ description: 产品总(pda-pm)，pda-fleet 唯一用户入口，直属下级只�
 
 - 伙伴 label：只有 `DM` / `AM`（label 文字为准；实际若为小写以实际为准）
 - 发出方向：`pm2dm` / `pm2am`；收到方向：`dm2pm` / `am2pm`
-- **不得**写 `inbox/dl{n}/` / `inbox/al{n}/`（收件箱只有 `pm` / `dm` / `am` 三个），也不接受工程师的直接回报
+- 收件箱只有 `pm` / `dm` / `am` 三个，**不得**写其它目录；只与 DM / AM 通信，不接受工程师的直接回报
 - 正文必带：目标角色、任务边界、权威文档路径、期望产物、回报要求
 - **投递引号纪律**：单引号包整段、**禁反引号与 `$()`**（会被 shell 吃掉）；`send-keys enter` 常被吞，补发至输入框清空且底部出现 `esc interrupt` 再算送达
 - **收到回执才算送达**；无回执就问，不重复投递

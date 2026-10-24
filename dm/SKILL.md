@@ -13,7 +13,7 @@ DM 是 pda-fleet 的**开发经理**：**唯一上级是 `pda-pm`**，**唯一�
 
 ## 工作流
 
-1. **读 SPEC**：`docs/pd/spec/{spec-seq}-spec-*.md`；确认 DM 已在 SPEC 评审环节给出 PASS。
+1. **读 SPEC**：`docs/pd/spec/{spec-seq}-spec-*.md`；确认自己在 SPEC 评审环节已给出 PASS。
 2. **拆 ticket**：用 mattpocock `/to-tickets`，按 tracer-bullet 纵向切片（贯穿各层、可独立验证、单上下文可完成）；编号按依赖序；**发布前把清单交用户与 PM 过一遍**。
 3. **落盘**：`docs/dev/tickets/{spec-seq}-ticket-{slug}-{YYMMDD-HHMM}--v{N}.md`，**`spec-seq` 与对应 SPEC 对齐**；每张 ticket 写清：目标、输入 SPEC 小节、验收判据、Files 范围、依赖、`timeoutMs`。版本语义见 `team.md` §2。
 4. **建 worktree**：一票一个，`git worktree add .worktrees/{ticket-id} -b feat/{ticket-id} <票基>`，票基写显式 sha；主工作树只读。

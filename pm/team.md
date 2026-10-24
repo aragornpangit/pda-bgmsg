@@ -60,7 +60,7 @@ HERDR_ENV=1 herdr pane list --workspace "$HERDR_WORKSPACE_ID"
 
 若目标 label 不存在：**停下问用户**，不要猜测 pane id、不要对不存在的会话反复重试。
 
-创建 tab（PM 建两个部门经理；部门经理不建 tab）：
+创建 tab（PM 建两个经理的 tab；经理不建 tab）：
 
 ```bash
 # <ROLE> 取 DM / AM；PM 自己的 tab 由用户创建，不在 PM 会话内自建
@@ -181,7 +181,7 @@ PM 接手项目的**第一件事**：检查目录，缺什么建什么。可重�
 cd <项目根>
 mkdir -p docs/{pd/{prd,spec},dev/tickets,research,user/{user-arch,user-plan}} inbox/{pm,dm,am}
 grep -qxF 'inbox/*/' .gitignore 2>/dev/null || echo 'inbox/*/' >> .gitignore   # 收件箱不入库
-bash pm/scripts/check-pda-doc-paths.sh .
+bash scripts/check-pda-doc-paths.sh .        # 本仓内为 pm/scripts/…
 ```
 
 - **完成判据**：机检输出 `ALL_PASS`。缺目录时脚本报 `FAIL 目录缺失`，PM 补齐后重跑。
@@ -196,7 +196,7 @@ bash pm/scripts/check-pda-doc-paths.sh .
 3. **DM 拆 ticket**：DM 基于 SPEC，用 `/to-tickets` 拆成与 SPEC 对应的开发工单，落盘 `docs/dev/tickets/`；DM 负责汇总、评审、整合本部门结果。
 4. **DM 派工程师**：DM 按依赖图分批，**直接派 `pda-de`**（一个 ticket 一个子代理、一个 git worktree）；派单 prompt 必带票面路径、票基（显式 sha）、Files 边界、验收判据、期望产物、回报格式、`timeoutMs`。
 5. **DM 验收整合**：收子代理结果 → 核 diff 与逐条判据读数 → 主干构建与全量测试 → 合并（冲突逐 hunk 按意图消解）→ 不合格打回原 `pda-de` → 收回 `git worktree remove` → 逐票更新状态。
-6. **交付 PM 评审**：DM 把代码提交给 PM **部门**评审；一个 ticket 对应一个 SPEC。链路：PM 亲自对照 SPEC 验收标准核验 → PM 给结论 → **PM 通知 DM** → DM 才执行 `git push`。
+6. **交付 PM 评审**：DM 把代码提交给 PM 评审；**每张 ticket 都必须能追溯到 SPEC 的验收标准**。链路：PM 亲自对照 SPEC 验收标准核验 → PM 给结论 → **PM 通知 DM** → DM 才执行 `git push`。
 7. **并行**：对无依赖关系的任务**必须开满并行** —— PM 在 DM / AM 之间并行；DM 在多个 `pda-de` 之间并行（无依赖票一次派满）；AM 在多个 `pda-ae` 之间并行（无依赖单元一次派满）。优先级：dynamic workflow > 多个 subagents 并行；**不得为省事而串行，也不得越级派发**；串行必须在交付正文里写明依赖理由。
 
 ### 4.1 PRD 模板（PM）
@@ -243,7 +243,7 @@ SPEC 必须自包含：每条 User Story 都能转成 ticket 与用例。
 ## 7. 机检
 
 ```bash
-bash pm/scripts/check-pda-doc-paths.sh
+bash scripts/check-pda-doc-paths.sh <项目根>   # 本仓内为 pm/scripts/…；省略参数则检查当前目录
 ```
 
 检查四件事：六个产物目录存在（`docs/pd/prd`、`docs/pd/spec`、`docs/dev/tickets`、`docs/research`、`docs/user/user-arch`、`docs/user/user-plan`）＋ 根目录 `inbox/` 存在、三个技能（`pda-pm` / `pda-dm` / `pda-am`）各自指向自己的唯一目录、本契约登记齐全、负样本能被正确拒绝。**改路径规范后必须重跑**。
@@ -252,7 +252,7 @@ bash pm/scripts/check-pda-doc-paths.sh
 
 - **2026-10-24（用户裁定·职责下沉 + 开满并行）**：① 原组长技能的内容**全部下沉**——worktree 与本地依赖补齐、派工硬约束（tdd / code-review / 显式 add / 禁 push 与 merge / 提交身份与「——de」/ 仅 `.worktrees/**`）、门与基线纪律（基准冻结、四问、门红三分类）、取证硬约束（一手出处、可复现命令、`[OBS]/[INF]/[UNK]`、不得自行换工具）由 DM / AM 收进自己的技能与派发 prompt；引号纪律与 `send-keys enter` 补发核验归各角色通信节。② 新增**开满并行硬约束**：无依赖任务必须一次派满子代理（单元数 = 并发数），串行须举证；同一主题的证据汇总、跨票合并与验收判断仍由经理串行做。
 - **2026-10-24（用户裁定·取消组长层级）**：① 撤销 `pda-dl{n}` / `pda-al{n}` 两个组长技能与对应 tab，团队只剩 **`pda-pm` / `pda-dm` / `pda-am` 三个角色**；② 两个经理**直接**用 dynamic workflow 或 subagents 派 `pda-de` / `pda-ae` 工程师干活，并亲自复核、整合、落笔；③ 收件箱只剩 `inbox/{pm,dm,am}`，方向码只剩 `pm2dm` / `pm2am` / `dm2pm` / `am2pm`，工程师不走收件箱；④ 单线指挥仍为硬约束：产品总只指挥两个经理，DM 与 AM 不直连。
-- **2026-10-24（用户裁定·改名与称号）**：① 团队名 `pda-team` 改为 **`pda-fleet`**；② 团队领导技能 `pda-leader-pm` 改回 **`pda-pm`**（技能目录名同步）；③ 三个角色起称号 —— `pda-pm`＝**产品总**、`pda-dm`＝**开发经理**、`pda-am`＝**分析经理**；④ 组长技能 `pda-dl{n}` / `pda-al{n}`、tab label（`PM` / `DM` / `AM`）、收件箱目录（`inbox/{pm,dm,am}`）与方向码不变。
+- **2026-10-24（用户裁定·改名与称号）**：① 团队名 `pda-team` 改为 **`pda-fleet`**；② 团队领导技能 `pda-leader-pm` 改回 **`pda-pm`**（技能目录名同步）；③ 三个角色起称号 —— `pda-pm`＝**产品总**、`pda-dm`＝**开发经理**、`pda-am`＝**分析经理**；④ 组长技能 `pda-dl{n}` / `pda-al{n}`、tab label（`PM` / `DM` / `AM`）、收件箱目录（`inbox/{pm,dm,am}`）与方向码不变（组长层级同日随后被取消，见上一条）。
 - **2026-10-22（用户裁定·组织调整）**：团队改为五级单线指挥 —— ① 产品总技能由 `pda-pm` 更名 `pda-leader-pm`（团队领导兼产品经理），直属下级只有 `pda-dm` 与 `pda-am`，原 `pde` 撤销；② `pda-dm` 下新增 n 个开发组长 `pda-dl{n}`（label 同名，由 DM 用 `herdr tab create --label` 按需生成），开发工程师更名 `pda-de` 且只归组长；③ `pda-am` 下新增 n 个分析组长 `pda-al{n}`，分析工程师更名 `pda-ae` 且只归组长；④ 任何角色只与直属上下级通信，跨部门经 PM 转派。
 - **2026-10-21（用户裁定）**：① PRD 类别**复活**，落盘路径由 `docs/prd/` 改为 `docs/pd/prd/`（`docs/prd/` 作废）；② 新增 `docs/dev/arch/`——**软件设计架构**落点，DM 落盘、PM 评审，命名 `{seq}-arch-{slug}-{YYMMDD-HHMM}--v{N}.md`。
 - **2026-10-21（用户裁定·第二次）**：目录结构重排 —— ① 收件箱移到项目根 `inbox/<pm|dm|am>/`，不再进 `docs/`（`.gitignore` 用 `inbox/*/`）；② SPEC 由 `docs/spec/` 改为 `docs/pd/spec/`；③ ticket 由 `docs/tickets/` 改为 `docs/dev/tickets/`；④ 新增 `docs/user/user-arch/`、`docs/user/user-plan/`（均 PM 落盘），`docs/dev/arch/` 作废。
